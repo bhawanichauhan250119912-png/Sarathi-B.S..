@@ -4,12 +4,13 @@ from google.genai import types
 import time
 import os
 
-# 1. Page configuration - Sets a premium AI platform vibe
+# 1. Page configuration - Logo set as page_icon
 st.set_page_config(
     page_title="sarathi-B.S.", 
-    page_icon="🏫", 
+    page_icon="74424.png",  # Yahan emoji ki jagah aapka naya logo aa gaya!
     layout="centered"
 )
+
 
 # --- Full-Proof Logo and Avatar Management ---
 school_logo = "🤖" # Default backup emoji
