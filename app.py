@@ -87,7 +87,7 @@ if user_input:
     try:
         # जेमिनी मॉडल लोड करना (System Instruction के साथ)
         model = genai.GenerativeModel(
-model_name="gemini-1.5-flash-latest",
+model = genai.GenerativeModel('gemini-1.5-flash')
             system_instruction=SCHOOL_DATA
         )
         
