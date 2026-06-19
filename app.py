@@ -2,9 +2,18 @@ import streamlit as st
 from google import genai
 from google.genai import types
 import time
+from PIL import Image  # फोटो को ठीक से लोड करने के लिए
 
 # 1. पेज का नाम और आइकॉन सेट करना
 st.set_page_config(page_title="sarathi-B.S.", page_icon="🏫", layout="centered")
+
+# --- लोगो लोड करने का फुल-प्रूफ सिस्टम ---
+try:
+    # गिटहब से आपकी अपलोड की हुई फोटो को ओपन करेगा
+    school_logo = Image.open("74424.png")
+except Exception:
+    # अगर किसी वजह से फोटो न मिले, तो बैकअप में रोबोट दिखाएगा ताकि कोड क्रैश न हो
+    school_logo = "🤖"
 
 # 2. हेडिंग्स
 st.title("🤖 sarathi-B.S.")
@@ -24,10 +33,10 @@ try:
         st.warning("कृपया ऐप का उपयोग करने के लिए API Key प्रदान करें।")
         st.stop()
 except Exception as e:
-    st.error("कृपया Streamlit Secrets में 'GOOGLE_API_KEY' सेट करें।")
+    st.error("कृपया Streamlit Secrets में 'GOOGLE_API_KEY' Set करें।")
     st.stop()
 
-# 4. मास्टर डेटा - यहाँ सारी जानकारी सुरक्षित है!
+# 4. मास्टर डेटा
 SCHOOL_DATA = """
 तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के आधिकारिक AI गाइड हो। तुम्हारा नाम 'सारथी-B.S.' है।
 तुम्हारी भाषा अत्यंत विनम्र, संस्कारी और प्रोफेशनल (Hinglish/Hindi) होनी चाहिए। 
@@ -77,9 +86,9 @@ if "request_times" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# चैट हिस्ट्री दिखाना (लोगो के साथ)
+# चैट हिस्ट्री दिखाना (फिक्स लोगो के साथ)
 for msg in st.session_state.messages:
-    custom_avatar = "👤" if msg["role"] == "user" else "74424.png"
+    custom_avatar = "👤" if msg["role"] == "user" else school_logo
     with st.chat_message(msg["role"], avatar=custom_avatar):
         st.write(msg["text"])
 
@@ -117,7 +126,7 @@ if user_input:
         response = chat.send_message(user_input)
         
         st.session_state.messages.append({"role": "assistant", "text": response.text})
-        with st.chat_message("assistant", avatar="74424.png"):
+        with st.chat_message("assistant", avatar=school_logo):
             st.write(response.text)
             
     except Exception as e:
