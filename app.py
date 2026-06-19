@@ -99,7 +99,7 @@ if user_input:
 
         # नई लाइब्रेरी (google-genai) के तरीके से चैट शुरू करना
         chat = client.chats.create(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             history=chat_history,
             config=types.GenerateContentConfig(
                 system_instruction=SCHOOL_DATA
