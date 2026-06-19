@@ -6,13 +6,22 @@ st.set_page_config(page_title="School Guide AI", page_icon="🏫")
 
 # 2. API Key सेट करना
 try:
-    api_key = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=api_key)
-except Exception:
+    if "GOOGLE_API_KEY" in st.secrets:
+        api_key = st.secrets["GOOGLE_API_KEY"]
+    else:
+        # यह लोकल टेस्टिंग के लिए बैकअप है
+        api_key = st.sidebar.text_input("जेमिनी API की दर्ज करें:", type="password")
+    
+    if api_key:
+        genai.configure(api_key=api_key)
+    else:
+        st.warning("कृपया ऐप का उपयोग करने के लिए API Key प्रदान करें।")
+        st.stop()
+except Exception as e:
     st.error("कृपया Streamlit Secrets में 'GOOGLE_API_KEY' सेट करें।")
     st.stop()
 
-# 3. स्कूल का पूरा डेटा (आपका ओरिजिनल डेटा यहाँ है)
+# 3. स्कूल का पूरा डेटा
 SCHOOL_DATA = """
 तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के एक बहुत ही संस्कारी, बुद्धिमान और बेहद विनम्र एआई गाइड (AI Assistant) हो। तुम्हारा नाम 'सारथी' है।
 तुम्हारा काम स्कूल के छात्रों, पेरेंट्स और मैनेजमेंट को स्कूल के बारे में सही, सटीक और गर्व से भरी जानकारी देना है।
@@ -35,7 +44,7 @@ SCHOOL_DATA = """
 
 👨‍🏫 क्लास 11 के बेहतरीन टीचर्स:
 - कविता यादव मैम: हिस्ट्री (History) और ज्योग्राफी (Geography) बहुत ही गहरे तरीके से पढ़ाती हैं।
-- विजय राठौर सर: पॉलिटिकल साइंस, फाइन आर्ट्स, कॉन्स्टिट्यूशन (संविधान) पढ़ाते हैं और उन्हें इंग्लिश ग्रामर की बहुत ही गज़ब की नॉलेज है।
+- विजय राठौर सर: पॉलिटिकल साइंस, Fine Arts, कॉन्स्टिट्यूशन (संविधान) पढ़ाते हैं और उन्हें इंग्लिश ग्रामर की बहुत ही गज़ब की नॉलेज है।
 - विपिन अग्रवाल सर: स्कूल के सबसे बेहतरीन और बच्चों के चहेते मैथ्स (Maths) के टीचर हैं।
 
 🧪 शानदार लैब्स और सुविधाएं:
@@ -58,11 +67,11 @@ SCHOOL_DATA = """
 st.title("🏫 Pradhan Public School: Smart AI Guide")
 st.write("प्रिंसिपल मैम और मैनेजमेंट के लिए स्पेशल वर्ज़न! ✨")
 
-# 4. चैट इंटरफेस
+# 4. चैट इंटरफेस (मेमोरी/Session State)
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# पुरानी चैट दिखाना
+# पुरानी चैट स्क्रीन पर दिखाना
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.write(msg["text"])
@@ -70,30 +79,30 @@ for msg in st.session_state.messages:
 user_input = st.chat_input("स्कूल या टीचर्स के बारे में सारथी से पूछें...")
 
 if user_input:
-    # 1. यूजर का मैसेज स्क्रीन पर दिखाना और सेव करना
+    # यूजर का मैसेज दिखाना और सेव करना
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user"):
         st.write(user_input)
 
     try:
-            # जेमिनी मॉडल को लोड करना
+        # जेमिनी मॉडल लोड करना (System Instruction के साथ)
         model = genai.GenerativeModel(
-            model_name="models/gemini-1.5-flash",
-              system_instruction=SCHOOL_DATA
+            model_name="gemini-1.5-flash",  # यहाँ से 'models/' हटा दिया है, डायरेक्ट नाम बेहतर काम करता है
+            system_instruction=SCHOOL_DATA
         )
         
-        
-        # 3. जेमिनी के समझने लायक पुरानी चैट हिस्ट्री तैयार करना
+        # जेमिनी के लिए पुरानी चैट हिस्ट्री सही फॉर्मेट में तैयार करना (Failsafe Method)
         formatted_history = []
-        for msg in st.session_state.messages[:-1]: # आख़िरी मैसेज को छोड़कर बाकी सब
+        for msg in st.session_state.messages[:-1]: 
             role_name = "user" if msg["role"] == "user" else "model"
-            formatted_history.append({"role": role_name, "parts": [msg["text"]]})
+            # सही डिक्शनरी स्ट्रक्चर: {'text': msg["text"]}
+            formatted_history.append({"role": role_name, "parts": [{"text": msg["text"]}]})
             
-        # 4. पुरानी हिस्ट्री के साथ चैट सेशन शुरू करना और नया मैसेज भेजना
+        # पुरानी हिस्ट्री के साथ चैट शुरू करना
         chat = model.start_chat(history=formatted_history)
         response = chat.send_message(user_input)
         
-        # 5. एआई का जवाब दिखाना और उसे मेमोरी में सेव करना
+        # बॉट का जवाब दिखाना और सेव करना
         st.session_state.messages.append({"role": "assistant", "text": response.text})
         with st.chat_message("assistant"):
             st.write(response.text)
