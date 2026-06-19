@@ -115,7 +115,7 @@ if user_input:
 
         # जेमिनी मॉडल से कनेक्ट करना
         chat = client.chats.create(
-            model="gemini-2.0-flash",
+            model="gemini-3.5-flash",
             history=chat_history,
             config=types.GenerateContentConfig(
                 system_instruction=SCHOOL_DATA
