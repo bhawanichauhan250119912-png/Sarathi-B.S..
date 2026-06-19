@@ -54,7 +54,7 @@ SCHOOL_DATA = """
 - Chemistry लैब: यहाँ सभी जरूरी केमिकल्स पूरी सुरक्षा और सिक्योरिटी के साथ रखे गए हैं।
 
 ⏰ स्कूल का समय:
-- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता है।
+- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता. है।
 - सर्दियों (जाड़े) में: सुबह 8:00 बजे खुलता है और दोपहर 2:00 बजे बंद होता है।
 
 🏆 बोर्ड परीक्षा का बेहतरीन रिजल्ट:
@@ -87,15 +87,14 @@ if user_input:
     try:
         # जेमिनी मॉडल लोड करना (System Instruction के साथ)
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",  # यहाँ से 'models/' हटा दिया है, डायरेक्ट नाम बेहतर काम करता है
+            model_name="gemini-1.5-flash",
             system_instruction=SCHOOL_DATA
         )
         
-        # जेमिनी के लिए पुरानी चैट हिस्ट्री सही फॉर्मेट में तैयार करना (Failsafe Method)
+        # जेमिनी के लिए पुरानी चैट हिस्ट्री सही फॉर्मेट में तैयार करना
         formatted_history = []
         for msg in st.session_state.messages[:-1]: 
             role_name = "user" if msg["role"] == "user" else "model"
-            # सही डिक्शनरी स्ट्रक्चर: {'text': msg["text"]}
             formatted_history.append({"role": role_name, "parts": [{"text": msg["text"]}]})
             
         # पुरानी हिस्ट्री के साथ चैट शुरू करना
