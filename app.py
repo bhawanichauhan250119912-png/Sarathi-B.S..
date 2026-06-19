@@ -1,19 +1,20 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # 1. पेज कॉन्फ़िगरेशन
 st.set_page_config(page_title="School Guide AI", page_icon="🏫")
 
-# 2. API Key सेट करना
+# 2. API Key सेट करना और क्लाइंट बनाना
 try:
     if "GOOGLE_API_KEY" in st.secrets:
         api_key = st.secrets["GOOGLE_API_KEY"]
     else:
-        # यह लोकल टेस्टिंग के लिए बैकअप है
         api_key = st.sidebar.text_input("जेमिनी API की दर्ज करें:", type="password")
     
     if api_key:
-        genai.configure(api_key=api_key)
+        # गूगल की नई लाइब्रेरी का क्लाइंट बनाना
+        client = genai.Client(api_key=api_key)
     else:
         st.warning("कृपया ऐप का उपयोग करने के लिए API Key प्रदान करें।")
         st.stop()
@@ -24,7 +25,7 @@ except Exception as e:
 # 3. स्कूल का पूरा डेटा
 SCHOOL_DATA = """
 तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के एक बहुत ही संस्कारी, बुद्धिमान और बेहद विनम्र एआई गाइड (AI Assistant) हो। तुम्हारा नाम 'सारथी' है।
-तुम्हारा काम स्कूल के छात्रों, पेरेंट्स और मैनेजमेंट को स्कूल के बारे में सही, सटीक और गर्व से भरी जानकारी देना है।
+तुम्हारा काम स्कूल के छात्रों, पेरENTS और मैनेजमेंट को स्कूल के बारे में सही, सटीक और गर्व से भरी जानकारी देना है।
 
 ✨ बातचीत के विशेष नियम:
 - जब भी कोई 'Hello', 'Hi', 'नमस्ते', 'प्रणाम' या 'राम राम' कहे, तो बहुत ही खुश होकर, आदर के साथ दोनों हाथ जोड़कर स्वागत करो।
@@ -45,7 +46,7 @@ SCHOOL_DATA = """
 👨‍🏫 क्लास 11 के बेहतरीन टीचर्स:
 - कविता यादव मैम: हिस्ट्री (History) और ज्योग्राफी (Geography) बहुत ही गहरे तरीके से पढ़ाती हैं।
 - विजय राठौर सर: पॉलिटिकल साइंस, Fine Arts, कॉन्स्टिट्यूशन (संविधान) पढ़ाते हैं और उन्हें इंग्लिश ग्रामर की बहुत ही गज़ब की नॉलेज है।
-- विपिन अग्रवाल सर: स्कूल के सबसे बेहतरीन और बच्चों के चहेते मैथ्स (Maths) के टीचर हैं।
+- विपინ अग्रवाल सर: स्कूल के सबसे बेहतरीन और बच्चों के चहेते मैथ्स (Maths) के टीचर हैं।
 
 🧪 शानदार लैब्स और सुविधाएं:
 - सभी क्लासेस में बढ़िया पंखे लगे हैं, हवादार कमरे हैं और स्मार्ट क्लास की आधुनिक सुविधा है।
@@ -54,7 +55,7 @@ SCHOOL_DATA = """
 - Chemistry लैब: यहाँ सभी जरूरी केमिकल्स पूरी सुरक्षा और सिक्योरिटी के साथ रखे गए हैं।
 
 ⏰ स्कूल का समय:
-- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता है।
+- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता.
 - सर्दियों (जाड़े) में: सुबह 8:00 बजे खुलता है और दोपहर 2:00 बजे बंद होता है।
 
 🏆 बोर्ड परीक्षा का बेहतरीन रिजल्ट:
@@ -85,20 +86,27 @@ if user_input:
         st.write(user_input)
 
     try:
-        # जेमिनी मॉडल लोड करना (System Instruction के साथ)
-        model = genai.GenerativeModel(
-            model_name='gemini-1.5-flash',
-            system_instruction=SCHOOL_DATA
-        )
-
-        # जेमिनी के लिए पुरानी चैट हिस्ट्री सही फॉर्मेट में तैयार करना
-        formatted_history = []
+        # नए SDK के लिए पुरानी चैट हिस्ट्री तैयार करना
+        chat_history = []
         for msg in st.session_state.messages[:-1]:
             role_name = "user" if msg["role"] == "user" else "model"
-            formatted_history.append({"role": role_name, "parts": [{"text": msg["text"]}]})
+            chat_history.append(
+                types.Content(
+                    role=role_name,
+                    parts=[types.Part.from_text(text=msg["text"])]
+                )
+            )
 
-        # पुरानी हिस्ट्री के साथ चैट शुरू करना
-        chat = model.start_chat(history=formatted_history)
+        # नई लाइब्रेरी (google-genai) के तरीके से चैट शुरू करना
+        chat = client.chats.create(
+            model="gemini-1.5-flash",
+            history=chat_history,
+            config=types.GenerateContentConfig(
+                system_instruction=SCHOOL_DATA
+            )
+        )
+        
+        # मैसेज भेजना
         response = chat.send_message(user_input)
 
         # बॉट का जवाब दिखाना और सेव करना
