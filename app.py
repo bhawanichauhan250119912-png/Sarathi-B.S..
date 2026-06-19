@@ -76,9 +76,9 @@ if user_input:
         st.write(user_input)
 
     try:
-        # 2. जेमिनी मॉडल को सिस्टम इंस्ट्रक्शन के साथ लोड करना
+          # जेमिनी मॉडल को सिस्टम इंस्ट्रक्शन के साथ लोड करना
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-pro",
             system_instruction=SCHOOL_DATA
         )
         
