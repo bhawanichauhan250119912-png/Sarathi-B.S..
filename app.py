@@ -1,6 +1,7 @@
 import streamlit as st
 from google import genai
 from google.genai import types
+import time  # समय ट्रैकिंग के लिए
 
 # 1. पेज कॉन्फ़िगरेशन
 st.set_page_config(page_title="School Guide AI", page_icon="🏫")
@@ -13,7 +14,6 @@ try:
         api_key = st.sidebar.text_input("जेमिनी API की दर्ज करें:", type="password")
     
     if api_key:
-        # गूगल की नई लाइब्रेरी का क्लाइंट बनाना
         client = genai.Client(api_key=api_key)
     else:
         st.warning("कृपया ऐप का उपयोग करने के लिए API Key प्रदान करें।")
@@ -41,12 +41,12 @@ SCHOOL_DATA = """
 📚 स्कूल की सटीक जानकारियां:
 - स्कूल का नाम और स्थान: प्रधान पब्लिक सीनियर सेकेंडरी स्कूल। यह सीगना, आगरा में स्थित है, रायपुरा जाट से थोड़ा आगे चलकर।
 - कैंपस और आकार: स्कूल के आगे एक सुंदर असेंबली ग्राउंड है, साइड में एक हरा-भरा घास का मैदान है, और पीछे खेलकूद के लिए एक बहुत बड़ा शानदार प्लेग्राउंड है।
-- अनुशासन और खेलकूद: स्कूल का अनुशासन बहुत कड़ा और अच्छा है। जब भी आगरा में दूसरे स्कूलों के साथ खेलकूद प्रतियोगिताएं होती हैं, तो ज्यादातर खेलों में हमारा स्कूल ही जीतता है।
+- अनुशासन और खेलकूद: स्कूल का अनुशासन बहुत कड़ा और अच्छा है। जब भी आगरा में दूसरे अंकों के साथ खेलकूद प्रतियोगिताएं होती हैं, तो ज्यादातर खेलों में हमारा स्कूल ही जीतता है।
 
 👨‍🏫 क्लास 11 के बेहतरीन टीचर्स:
 - कविता यादव मैम: हिस्ट्री (History) और ज्योग्राफी (Geography) बहुत ही गहरे तरीके से पढ़ाती हैं।
 - विजय राठौर सर: पॉलिटिकल साइंस, Fine Arts, कॉन्स्टिट्यूशन (संविधान) पढ़ाते हैं और उन्हें इंग्लिश ग्रामर की बहुत ही गज़ब की नॉलेज है।
-- विपინ अग्रवाल सर: स्कूल के सबसे बेहतरीन और बच्चों के चहेते मैथ्स (Maths) के टीचर हैं।
+- विपिन अग्रवाल सर: स्कूल के सबसे बेहतरीन और बच्चों के चहेते मैथ्स (Maths) के टीचर हैं।
 
 🧪 शानदार लैब्स और सुविधाएं:
 - सभी क्लासेस में बढ़िया पंखे लगे हैं, हवादार कमरे हैं और स्मार्ट क्लास की आधुनिक सुविधा है।
@@ -55,7 +55,7 @@ SCHOOL_DATA = """
 - Chemistry लैब: यहाँ सभी जरूरी केमिकल्स पूरी सुरक्षा और सिक्योरिटी के साथ रखे गए हैं।
 
 ⏰ स्कूल का समय:
-- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता.
+- गर्मियों में: सुबह 7:00 बजे खुलता है और दोपहर 1:00 बजे बंद होता है।
 - सर्दियों (जाड़े) में: सुबह 8:00 बजे खुलता है और दोपहर 2:00 बजे बंद होता है।
 
 🏆 बोर्ड परीक्षा का बेहतरीन रिजल्ट:
@@ -68,7 +68,10 @@ SCHOOL_DATA = """
 st.title("🏫 Pradhan Public School: Smart AI Guide")
 st.write("प्रिंसिपल मैम और मैनेजमेंट के लिए स्पेशल वर्ज़न! ✨")
 
-# 4. चैट इंटरफेस (मेमोरी/Session State)
+# --- वॉर्निंग सिस्टम के लिए मेमोरी सेट करना ---
+if "request_times" not in st.session_state:
+    st.session_state.request_times = []
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -80,13 +83,26 @@ for msg in st.session_state.messages:
 user_input = st.chat_input("स्कूल या टीचर्स के बारे में सारथी से पूछें...")
 
 if user_input:
-    # यूजर का मैसेज दिखाना और सेव करना
+    # 1. समय की गणना करना (करंट टाइम)
+    current_time = time.time()
+    
+    # 2. केवल पिछले 60 सेकंड के अंदर किए गए सवालों को लिस्ट में रखना
+    st.session_state.request_times = [t for t in st.session_state.request_times if current_time - t < 60]
+    
+    # 3. एडवांस वॉर्निंग चेक: अगर 1 मिनट में 10 या उससे ज़्यादा सवाल हो चुके हैं (लिमिट 15 की होती है)
+    if len(st.session_state.request_times) >= 10:
+        st.warning("⚠️ **चेतावनी:** आप बहुत तेज़ी से सवाल पूछ रहे हैं! गूगल बाबा की फ्री लिमिट समाप्त होने वाली है। कृपया अगले सवाल से पहले 15 सेकंड का गैप दें।")
+
+    # 4. इस रिक्वेस्ट का समय लिस्ट में जोड़ना
+    st.session_state.request_times.append(current_time)
+
+    # यूजर का संदेश दिखाना
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user"):
         st.write(user_input)
 
     try:
-        # नए SDK के लिए पुरानी चैट हिस्ट्री तैयार करना
+        # चैट हिस्ट्री तैयार करना
         chat_history = []
         for msg in st.session_state.messages[:-1]:
             role_name = "user" if msg["role"] == "user" else "model"
@@ -97,23 +113,26 @@ if user_input:
                 )
             )
 
-        # नई लाइब्रेरी (google-genai) के तरीके से चैट शुरू करना
+        # जेमिनी मॉडल से कनेक्ट करना
         chat = client.chats.create(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             history=chat_history,
             config=types.GenerateContentConfig(
                 system_instruction=SCHOOL_DATA
             )
         )
         
-        # मैसेज भेजना
         response = chat.send_message(user_input)
 
-        # बॉट का जवाब दिखाना और सेव करना
+        # बॉट का जवाब दिखाना
         st.session_state.messages.append({"role": "assistant", "text": response.text})
         with st.chat_message("assistant"):
             st.write(response.text)
             
     except Exception as e:
-        st.error(f"एक एरर आया है: {e}")
-        
+        # अगर वॉर्निंग के बाद भी यूजर बटन दबाता है और लिमिट सच में खत्म हो जाती है
+        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+            st.error("⏳ **कोटा समाप्त (Limit Reached):** सारथी अभी थोड़ा थक गया है। कृपया 15 से 20 सेकंड रुकें और फिर पेज रिफ्रेश करके पूछें! 😊✨")
+        else:
+            st.error(f"एक एरर आया है: {e}")
+            
