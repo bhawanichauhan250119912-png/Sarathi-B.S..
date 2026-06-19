@@ -76,11 +76,12 @@ if user_input:
         st.write(user_input)
 
     try:
-          # जेमिनी मॉडल को सिस्टम इंस्ट्रक्शन के साथ लोड करना
+                # जेमिनी मॉडल को लोड करना
         model = genai.GenerativeModel(
-            model_name="gemini-pro",
+            model_name="gemini-1.5-flash",
             system_instruction=SCHOOL_DATA
         )
+        
         
         # 3. जेमिनी के समझने लायक पुरानी चैट हिस्ट्री तैयार करना
         formatted_history = []
