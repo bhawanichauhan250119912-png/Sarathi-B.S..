@@ -76,10 +76,10 @@ if user_input:
         st.write(user_input)
 
     try:
-                # जेमिनी मॉडल को लोड करना
+            # जेमिनी मॉडल को लोड करना
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction=SCHOOL_DATA
+            model_name="models/gemini-1.5-flash",
+              system_instruction=SCHOOL_DATA
         )
         
         
