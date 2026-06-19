@@ -4,22 +4,25 @@ from google.genai import types
 import time
 import os
 
-# 1. Page configuration - Logo set as page_icon
+# 1. Page Configuration - Sets browser icon to your school logo
 st.set_page_config(
     page_title="sarathi-B.S.", 
-    page_icon="74424.png",  # Yahan emoji ki jagah aapka naya logo aa gaya!
+    page_icon="74424.png", 
     layout="centered"
 )
 
-
 # --- Full-Proof Logo and Avatar Management ---
 school_logo = "🤖" # Default backup emoji
-for ext in ["png", "PNG", "jpg", "jpeg", "JPG"]:
-    if os.path.exists(f"74424.{ext}"):
-        school_logo = f"74424.{ext}"
-        break
+if os.path.exists("74424.png"):
+    school_logo = "74424.png"
 
-# 2. Main Premium Header Design (Gemini Inspired UI Layout)
+# 2. Logo and Premium Header Layout (Gemini Inspired)
+st.markdown("<br>", unsafe_allow_html=True) # Thoda space top par
+
+if os.path.exists("74424.png"):
+    # Aapka professional logo screen par center-aligned dikhega
+    st.image("74424.png", width=130)
+
 st.title("🤖 sarathi-B.S.")
 st.markdown("##### *Your Intelligent School Companion & AI Guide* ✨")
 st.markdown("#### **स्वागत है प्रधान पब्लिक स्कूल में! 👋**")
@@ -96,7 +99,7 @@ if "request_times" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Show previous chat history with updated clean avatars
+# Show previous chat history with school logo avatar
 for msg in st.session_state.messages:
     custom_avatar = "👤" if msg["role"] == "user" else school_logo
     with st.chat_message(msg["role"], avatar=custom_avatar):
@@ -107,22 +110,19 @@ user_input = st.chat_input("स्कूल या टीचर्स के ब
 
 if user_input:
     current_time = time.time()
-    # Filter out requests older than 60 seconds
     st.session_state.request_times = [t for t in st.session_state.request_times if current_time - t < 60]
     
-    # Preventing API spam on free tier
     if len(st.session_state.request_times) >= 10:
         st.warning("⚠️ **चेतावनी:** आप बहुत तेज़ी से सवाल पूछ रहे हैं! कृपया थोड़ा रुक कर पूछें।")
         st.stop()
 
     st.session_state.request_times.append(current_time)
     
-    # Append user prompt and display it instantly
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user", avatar="👤"):
         st.write(user_input)
 
-    # Reconstruct history dynamically using correct google-genai structured types
+    # Reconstruct history dynamically
     chat_history = []
     for msg in st.session_state.messages[:-1]:
         role_name = "user" if msg["role"] == "user" else "model"
@@ -130,11 +130,10 @@ if user_input:
             types.Content(role=role_name, parts=[types.Part.from_text(text=msg["text"])])
         )
 
-    # 7. AI Processing block with elegant loading spinner (Gemini-style)
+    # 7. AI Processing block with school logo avatar and loading spinner
     with st.chat_message("assistant", avatar=school_logo):
         with st.spinner("सारथी टाइप कर रहा है... ✨"):
             try:
-                # Setting up the model session with runtime system instructions
                 chat = client.chats.create(
                     model="gemini-2.5-flash",
                     history=chat_history,
@@ -144,10 +143,8 @@ if user_input:
                     )
                 )
                 
-                # Fetching response from Gemini 2.5
                 response = chat.send_message(user_input)
                 
-                # Display and store output safely
                 st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "text": response.text})
                 
@@ -156,7 +153,7 @@ if user_input:
                 if "503" in err_message or "UNAVAILABLE" in err_message:
                     st.info("🏫 **सारथी संदेश:** सर्वर पर थोड़ा ट्रैफिक है। कृपया 5-10 सेकंड रुक कर दोबारा पूछें! 😊")
                 elif "429" in err_message or "RESOURCE_EXHAUSTED" in err_message:
-                    st.warning("⏳ **सारथी संदेश:** दैनिक निशुल्क सीमा (Free Limit) समाप्त। कृपया थोड़ी देर बाद प्रयास करें। 🙏")
+                    st.warning("⏳ **सारथी संदेश:** दैनिक निशुल्क सीमा समाप्त। कृपया थोड़ी देर बाद प्रयास करें। 🙏")
                 else:
                     st.error("⚠️ **तकनीकी संदेश:** नेटवर्क में कुछ रुकावट है या API Key अमान्य है। कृपया पुनः प्रयास करें।")
-                
+                    
