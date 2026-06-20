@@ -32,23 +32,23 @@ SCHOOL_DATA = """
 - एग्जामिनर: जगत प्रताप चौहान सर।
 - फैकल्टी: कविता यादव मैम (इतिहास/भूगोल), विजय राठौर सर (राजनीति विज्ञान/इंग्लिश), विपिन अग्रवाल सर (गणित)।
 - टॉपर्स: 10वीं देव छोंकर (98%), 12वीं प्रिया चौहान (96%)।
-- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), chemistry लैब।
+- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), केमिस्ट्री लैब।
 - समय: गर्मी (सुबह 7 से 1 बजे), सर्दी (सुबह 8 से 2 बजे)।
 
 [MANDATORY SYSTEM RULES]:
 1. Response Formatting: हमेशा अपने उत्तर को सिंपल Markdown (जैसे Bullet points, bold text, या tables) में ही व्यवस्थित (structured) रखें। कभी भी बड़ा और उबाऊ पैराग्राफ न दें।
 2. Guardrails & Safety: यदि कोई छात्र या यूजर स्कूल से हटकर व्यक्तिगत (personal), राजनीतिक (political), या किसी भी प्रकार का अनुचित (inappropriate) सवाल पूछे, तो पूरी तरह विनम्रता से मना कर दें: "I am here to assist you with school-related queries only."
 3. Handling Uncertainty: यदि स्कूल डेटा (जैसे विशिष्ट फीस, विशेष छुट्टियां) का सटीक जवाब उपलब्ध न हो, तो गलत अनुमान लगाने के बजाय कहें: "Please contact the school administration desk at [Phone/Email] for the most accurate details."
-4. Tone: हर प्रतिक्रिया (response) अत्यंत व्यावसायिक (professional), विनम्र (polite) und छात्र-अनुकूल (student-friendly) होनी चाहिए।
+4. Tone: हर प्रतिक्रिया (response) अत्यंत व्यावसायिक (professional), विनम्र (polite) और छात्र-अनुकूल (student-friendly) होनी चाहिए।
 """
 
 # ==========================================
-# 4. ADVANCED SEAMLESS & ANIMATED CSS (Fixed Typo)
+# 4. ADVANCED SEAMLESS & ANIMATED CSS
 # ==========================================
 st.markdown("""
     <style>
     /* 1. Seamless Light Canvas Configuration */
-    .stApp, [data-testid="stSidebar"] { 
+    .stApp, [data-testid="stSidebar"], [data-testid="stSidebarContent"] { 
         background-color: #ffffff !important; 
     }
     [data-testid="stSidebarCollapseButton"] {
@@ -160,15 +160,15 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # ==========================================
-# 6. SEAMLESS SIDEBAR
+# 6. SEAMLESS SIDEBAR (Fixed using Native Streamlit elements)
 # ==========================================
 with st.sidebar:
-    st.markdown("<h3 style='color: #1f2937;'>💬 Navigation</h3>", unsafe_allowed_html=True)
+    st.subheader("💬 Navigation")
     if st.button("🗑️ Reset Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
     st.markdown("---")
-    st.markdown("<p style='color: #6b7280; font-size: 13px;'>Sarathi App v2.5<br>Pradhan Public School</p>", unsafe_allowed_html=True)
+    st.caption("Sarathi App v2.5\n\nPradhan Public School")
 
 # ==========================================
 # 7. BRANDING PLACEMENT & HEADER
@@ -188,7 +188,6 @@ st.markdown(
 # ==========================================
 # 8. API CONNECTION (Strictly from Secrets)
 # ==========================================
-# Yeh bina kisi UI input ke seedhe aapke Streamlit Cloud Secrets se key read karega
 api_key = st.secrets.get("GOOGLE_API_KEY") or st.secrets.get("GEMINI_API_KEY")
 if not api_key: 
     st.error("Error: Streamlit Secrets mein 'GOOGLE_API_KEY' missing hai!")
