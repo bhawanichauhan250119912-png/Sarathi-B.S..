@@ -14,17 +14,175 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. ASSETS (Base64 SVG)
+# 2. ADVANCED SEAMLESS, 3D AVATAR & INPUT BOX CSS
 # ==========================================
-BLUE_SMILE_B64 = "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImdyYWQxIiBjeD0iMzUlIiBjeT0iMjUlIiByPSI2NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlMGY3ZmEiIC8+PHN0b3Agb2Zmc2V0Idi0MCUiIHN0b3AtY29sb3I9IiM0ZmMzZjciIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDI3N2JkIiAvPjwvcmFkaWFsR3JhZGllbnQ+PGZpbHRlciBpZD0ic2hhZG93Ij48ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iNCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+PC9maWx0ZXI+PC9kZWZzPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ1IiBmaWxsPSJ1cmwoI2dyYWQxKSIgZmlsdGVyPSJ1cmwoI3NoYWRvdykiIC8+PGNpcmNsZSBjeD0iMzUzIGN5PSI0MCIgcj0iNiIgZmlsbD0iI2ZmZmZmZiIgLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI2IiBmaWxsPSIjZmZmZmZmIiAvPjxwYXRoIGQ9Ik0gMzAgNjAgUSA1MCA3NSA3MCA2MCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9InRyYW5zcGFyZW50IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4="
-BLUE_SMILE_AVATAR = f"data:image/svg+xml;base64,{BLUE_SMILE_B64}"
+st.markdown("""
+    <style>
+    /* 1. Seamless Light Canvas - Pure White Force */
+    .stApp, [data-testid="stSidebar"], [data-testid="stSidebarContent"] { 
+        background-color: #ffffff !important; 
+    }
+    [data-testid="stSidebarCollapseButton"] {
+        background-color: transparent !important;
+    }
+    [data-testid="stSidebar"] {
+        border-right: none !important;
+        box-shadow: none !important;
+    }
+
+    /* 2. Chat Message Grid & Transparent Bubble Force */
+    [data-testid="stChatMessage"] { 
+        background-color: transparent !important; 
+        border: none !important; 
+        box-shadow: none !important;
+        padding: 0.8rem 0rem !important;
+    }
+    
+    /* Assistant Area */
+    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) [data-testid="stMarkdownContainer"] {
+        background-color: #ffffff !important; 
+        color: #1f2937 !important; 
+        padding: 5px 10px !important;
+    }
+    
+    /* User Chat Bubble - Clean Rounded Panel */
+    [data-testid="stChatMessage"]:has(.user-msg-hook) { 
+        display: flex !important; 
+        flex-direction: row-reverse !important; 
+    }
+    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stMarkdownContainer"] {
+        background-color: #f0f2f5 !important; 
+        color: #1f2937 !important; 
+        border-radius: 20px !important; 
+        padding: 12px 20px !important;
+    }
+    
+    /* Streamlit के पुराने डिफ़ॉल्ट अवतार ब्लॉक्स को पूरी तरह छुपाएं */
+    [data-testid="stChatMessage"] [data-testid="stChatAvatar"] { 
+        display: none !important; 
+    }
+
+    /* 3. Pure CSS 3D Skyblue Smiley Ball with Floating Animation */
+    .avatar-3d-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 5px;
+    }
+    .skyblue-3d-ball {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #e0f2fe, #38bdf8 40%, #0369a1 90%);
+        box-shadow: 0 4px 10px rgba(3, 105, 161, 0.3), inset -3px -3px 7px rgba(0,0,0,0.2);
+        position: relative;
+        animation: floatingBall 3s infinite ease-in-out;
+        flex-shrink: 0;
+    }
+    /* Smiley Faces Inside the 3D Ball using CSS Pseudo-elements */
+    .skyblue-3d-ball::before, .skyblue-3d-ball::after {
+        content: '';
+        position: absolute;
+        background: #ffffff;
+    }
+    /* Eyes */
+    .skyblue-3d-ball::before {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        top: 12px;
+        left: 10px;
+        box-shadow: 11px 0 #ffffff;
+    }
+    /* Smile Path */
+    .skyblue-3d-ball::after {
+        width: 14px;
+        height: 7px;
+        background: transparent;
+        border: 2px solid #ffffff;
+        border-top: none;
+        border-radius: 0 0 14px 14px;
+        top: 16px;
+        left: 10px;
+    }
+    
+    /* Main Large Branding Avatar Animation */
+    .header-logo-3d {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #e0f2fe, #38bdf8 40%, #0369a1 90%);
+        box-shadow: 0 10px 20px rgba(3, 105, 161, 0.25), inset -5px -5px 12px rgba(0,0,0,0.25);
+        margin: 0 auto;
+        position: relative;
+        animation: floatingBall 3s infinite ease-in-out;
+    }
+    .header-logo-3d::before {
+        content: ''; position: absolute; background: #ffffff;
+        width: 8px; height: 8px; border-radius: 50%; top: 22px; left: 20px; box-shadow: 22px 0 #ffffff;
+    }
+    .header-logo-3d::after {
+        content: ''; position: absolute; background: transparent;
+        width: 28px; height: 14px; border: 4px solid #ffffff; border-top: none; border-radius: 0 0 28px 28px; top: 32px; left: 21px;
+    }
+
+    @keyframes floatingBall { 
+        0%, 100% { transform: translateY(0px); } 
+        50% { transform: translateY(-6px); } 
+    }
+
+    /* 4. Complete Removal of Black/Dark Color from Chat Input Box */
+    div[data-testid="stChatInput"], 
+    div[data-testid="stChatInput"] > div,
+    div[data-testid="stChatInput"] textarea {
+        background-color: #EAF2FC !important;
+        color: #1f2937 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    div[data-testid="stChatInput"] {
+        border-radius: 30px !important;
+        padding: 6px 16px !important;
+        bottom: 20px !important;
+    }
+    div[data-testid="stChatInput"] button {
+        background-color: transparent !important;
+    }
+
+    /* 5. Typing Indicator layout */
+    .typing-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-style: italic;
+        color: #6b7280;
+        padding: 5px 0;
+    }
+    .bounce-dot {
+        width: 6px; height: 6px; background-color: #38bdf8; border-radius: 50%;
+        display: inline-block; animation: dotBounce 1.4s infinite ease-in-out both;
+    }
+    .bounce-dot:nth-child(1) { animation-delay: -0.32s; }
+    .bounce-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes dotBounce {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1.0) translateY(-5px); }
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # ==========================================
-# 3. SCHOOL INFORMATION & EXCLUSIVE GUARDRAILS
+# 3. SESSION STATE & RECENT CHATS LIST
+# ==========================================
+if "messages" not in st.session_state: 
+    st.session_state.messages = []
+
+# ==========================================
+# 4. EXCLUSIVE SCHOOL DATA & STRICT LANGUAGE RULES
 # ==========================================
 SCHOOL_DATA = """
-तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल', सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो।
-तुम्हारा exclusive domain सिर्फ और सिर्फ 'प्रधान पब्लिक स्कूल' है। तुम इसी स्कूल के curriculum, admissions, environment, और discipline के rules के मुताबिक जवाब दोगे।
+तुम 'प्रधान链पब्लिक सीनियर सेकेंडरी स्कूल', सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो।
+तुम्हारा exclusive domain सिर्फ 'प्रधान पब्लिक स्कूल' है।
 
 तुम्हारे पास स्कूल की पूरी जानकारी है:
 - प्रिंसिपल: श्रीमती मोनिका छोंकर मैम (अनुशासित और बेहतरीन नेतृत्व)।
@@ -35,148 +193,46 @@ SCHOOL_DATA = """
 - सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), केमिस्ट्री लैब।
 - समय: गर्मी (सुबह 7 से 1 बजे), सर्दी (सुबह 8 से 2 बजे)।
 
-[MANDATORY SYSTEM RULES]:
-1. Response Formatting: हमेशा अपने उत्तर को सिंपल Markdown (जैसे Bullet points, bold text, या tables) में ही व्यवस्थित (structured) रखें। कभी भी बड़ा और उबाऊ पैराग्राफ न दें।
-2. Guardrails & Safety: यदि कोई छात्र या यूजर स्कूल से हटकर व्यक्तिगत (personal), राजनीतिक (political), या किसी भी प्रकार का अनुचित (inappropriate) सवाल पूछे, तो पूरी तरह विनम्रता से मना कर दें: "I am here to assist you with school-related queries only."
-3. Handling Uncertainty: यदि स्कूल डेटा (जैसे विशिष्ट फीस, विशेष छुट्टियां) का सटीक जवाब उपलब्ध न हो, तो गलत अनुमान लगाने के बजाय कहें: "Please contact the school administration desk at [Phone/Email] for the most accurate details."
-4. Tone: हर प्रतिक्रिया (response) अत्यंत व्यावसायिक (professional), विनम्र (polite) और छात्र-अनुकूल (student-friendly) होनी चाहिए।
+[STRICT LANGUAGE & SYSTEM RULES]:
+1. Language Alignment Rule: जिस भाषा या स्टाइल में यूजर बात करे, तुम्हें strictly उसी भाषा में जवाब देना है। 
+   - अगर यूजर Pure Hindi (जैसे: "प्रिंसिपल कौन है?") में पूछे, तो शुद्ध हिंदी में जवाब दो।
+   - अगर यूजर Hinglish (जैसे: "School ki timings kya hai?") में पूछे, तो वैसे ही रोमन स्क्रिप्ट/Hinglish में जवाब दो।
+   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदलो।
+2. Response Formatting: हमेशा बुलेट पॉइंट्स, बोल्ड टेक्स्ट या टेबल का प्रयोग करें। बड़ा पैराग्राफ बिल्कुल न लिखें।
+3. Guardrails: स्कूल के बाहर के किसी भी सवाल को विनम्रता से रिजेक्ट करें।
+4. Uncertainty: सटीक जानकारी न होने पर स्कूल एडमिनिस्ट्रेशन डेस्क से संपर्क करने को कहें।
 """
 
 # ==========================================
-# 4. ADVANCED SEAMLESS & ANIMATED CSS
-# ==========================================
-st.markdown("""
-    <style>
-    /* 1. Seamless Light Canvas Configuration */
-    .stApp, [data-testid="stSidebar"], [data-testid="stSidebarContent"] { 
-        background-color: #ffffff !important; 
-    }
-    [data-testid="stSidebarCollapseButton"] {
-        background-color: transparent !important;
-    }
-    
-    /* Remove Sidebar border line to make it seamless */
-    [data-testid="stSidebar"] {
-        border-right: none !important;
-        box-shadow: none !important;
-    }
-
-    /* 2. Chat Message Grid & Bubble Overhaul */
-    [data-testid="stChatMessage"] { 
-        background-color: transparent !important; 
-        border: none !important; 
-        box-shadow: none !important;
-        padding: 1rem 0rem !important;
-    }
-    
-    /* Assistant Chat Bubble Customization */
-    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) [data-testid="stMarkdownContainer"] {
-        background-color: #ffffff !important; 
-        color: #1f2937 !important; 
-        border-radius: 16px !important; 
-        padding: 12px 20px !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    
-    /* User Chat Bubble Alignment and Tone */
-    [data-testid="stChatMessage"]:has(.user-msg-hook) { 
-        display: flex !important; 
-        flex-direction: row-reverse !important; 
-    }
-    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stMarkdownContainer"] {
-        background-color: #f0f2f5 !important; 
-        color: #1f2937 !important; 
-        border-radius: 18px !important; 
-        padding: 12px 20px !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stChatAvatar"] { 
-        display: none !important; 
-    }
-
-    /* 3. Continuous Micro-Animation for Avatar */
-    .header-logo { 
-        width: 65px; 
-        animation: floatPulse 3s infinite ease-in-out; 
-    }
-    @keyframes floatPulse { 
-        0%, 100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 2px 4px rgba(2,118,189,0.1)); } 
-        50% { transform: translateY(-6px) scale(1.03); filter: drop-shadow(0 8px 12px rgba(2,118,189,0.25)); } 
-    }
-
-    /* 4. Edgeless Floating Capsule Input Box (Gemini Theme) */
-    div[data-testid="stChatInput"] {
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 30px !important;
-        background-color: #EAF2FC !important;
-        padding: 6px 16px !important;
-        bottom: 20px !important;
-    }
-    div[data-testid="stChatInput"] textarea {
-        border: none !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-        color: #1f2937 !important;
-    }
-    div[data-testid="stChatInput"] button {
-        background-color: transparent !important;
-        border: none !important;
-    }
-
-    /* 5. Three-Dots Bouncing Typing Indicator Animation */
-    .typing-container {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-style: italic;
-        color: #6b7280;
-        font-family: sans-serif;
-        padding: 10px 0;
-    }
-    .bounce-dot {
-        width: 6px;
-        height: 6px;
-        background-color: #38bdf8;
-        border-radius: 50%;
-        display: inline-block;
-        animation: dotBounce 1.4s infinite ease-in-out both;
-    }
-    .bounce-dot:nth-child(1) { animation-delay: -0.32s; }
-    .bounce-dot:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes dotBounce {
-        0%, 80%, 100% { transform: scale(0); }
-        40% { transform: scale(1.0) translateY(-6px); }
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# ==========================================
-# 5. SESSION STATE
-# ==========================================
-if "messages" not in st.session_state: 
-    st.session_state.messages = []
-
-# ==========================================
-# 6. SEAMLESS SIDEBAR (Fixed using Native Streamlit elements)
+# 5. SIDEBAR (RECENT CHATS & NAVIGATION)
 # ==========================================
 with st.sidebar:
     st.subheader("💬 Navigation")
     if st.button("🗑️ Reset Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
+        
     st.markdown("---")
-    st.caption("Sarathi App v2.5\n\nPradhan Public School")
+    st.subheader("🕒 Recent Chats")
+    
+    # Dynamic list of recent messages submitted by user
+    user_queries = [m["text"] for m in st.session_state.messages if m["role"] == "user"]
+    if not user_queries:
+        st.caption("No recent conversations.")
+    else:
+        # Unique and unique entries only up to last 5
+        seen = set()
+        unique_queries = [x for x in user_queries if not (x in seen or seen.add(x))][-5:]
+        for q in reversed(unique_queries):
+            st.caption(f"📝 {q[:28]}...")
 
 # ==========================================
-# 7. BRANDING PLACEMENT & HEADER
+# 6. BRANDING HEADER WITH 3D AVATAR
 # ==========================================
 st.markdown(
-    f"""
-    <div style='text-align: center; margin-top: 20px;'>
-        <img src='{BLUE_SMILE_AVATAR}' class='header-logo'>
+    """
+    <div style='text-align: center; margin-top: 15px;'>
+        <div class='header-logo-3d'></div>
         <h1 style='margin-bottom: 0px; font-weight: 700; color: #1f2937;'>Sarathi AI</h1>
         <p style='margin-top: 4px; color: #4b5563; font-size: 15px; font-weight: 500;'>Pradhan Public School's Digital Assistant</p>
     </div>
@@ -186,7 +242,7 @@ st.markdown(
 )
 
 # ==========================================
-# 8. API CONNECTION (Strictly from Secrets)
+# 7. API CONNECTION (Strictly from Secrets)
 # ==========================================
 api_key = st.secrets.get("GOOGLE_API_KEY") or st.secrets.get("GEMINI_API_KEY")
 if not api_key: 
@@ -195,24 +251,36 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 # ==========================================
-# 9. DISPLAY CHAT HISTORY
+# 8. DISPLAY CHAT HISTORY WITH 3D AVATAR
 # ==========================================
 for msg in st.session_state.messages:
-    with st.chat_message("user" if msg["role"] == "user" else "assistant", avatar=None if msg["role"] == "user" else BLUE_SMILE_AVATAR):
-        if msg["role"] == "user":
-            content = f"<span class='user-msg-hook'></span>{msg['text']}"
-            st.markdown(content, unsafe_allow_html=True)
-        else:
-            st.markdown(f"✨ {msg['text']}", unsafe_allow_html=True)
+    if msg["role"] == "user":
+        with st.chat_message("user"):
+            st.markdown(f"<span class='user-msg-hook'></span>{msg['text']}", unsafe_allow_html=True)
+    else:
+        # Custom HTML wrapping for 3D Ball Avatar layout
+        st.markdown(
+            f"""
+            <div class='avatar-3d-box'>
+                <div class='skyblue-3d-ball'></div>
+                <div style='font-weight: 600; color: #4b5563; font-size: 14px;'>Sarathi AI</div>
+            </div>
+            <div>✨ {msg['text']}</div>
+            <hr style='border: none; border-top: 1px solid #f3f4f6; margin: 10px 0;'>
+            """, 
+            unsafe_allow_html=True
+        )
 
 # ==========================================
-# 10. CHAT INPUT & ANIMATED RESPONSE LOGIC
+# 9. CHAT INPUT & RESPONSE LOGIC
 # ==========================================
 if user_input := st.chat_input("Ask me anything about the school..."):
+    # Append & Display User Input
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user"):
         st.markdown(f"<span class='user-msg-hook'></span>{user_input}", unsafe_allow_html=True)
 
+    # Format historical chain for API
     api_contents = [
         types.Content(
             role="user" if m["role"] == "user" else "model", 
@@ -220,36 +288,53 @@ if user_input := st.chat_input("Ask me anything about the school..."):
         ) for m in st.session_state.messages
     ]
 
-    with st.chat_message("assistant", avatar=BLUE_SMILE_AVATAR):
-        typing_placeholder = st.empty()
-        typing_placeholder.markdown(
-            """
+    # Assistant Response Setup
+    typing_placeholder = st.empty()
+    typing_placeholder.markdown(
+        """
+        <div class='avatar-3d-box'>
+            <div class='skyblue-3d-ball'></div>
             <div class='typing-container'>
                 Sarathi is responding...
                 <div class='bounce-dot'></div>
                 <div class='bounce-dot'></div>
                 <div class='bounce-dot'></div>
             </div>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+    
+    try:
+        response_stream = client.models.generate_content_stream(
+            model="gemini-2.5-flash", 
+            contents=api_contents,
+            config=types.GenerateContentConfig(
+                system_instruction=SCHOOL_DATA, 
+                temperature=0.3
+            )
+        )
+        
+        # Clear loading animation state
+        typing_placeholder.empty()
+        
+        # Render clean Assistant Panel header before stream
+        st.markdown(
+            """
+            <div class='avatar-3d-box'>
+                <div class='skyblue-3d-ball'></div>
+                <div style='font-weight: 600; color: #4b5563; font-size: 14px;'>Sarathi AI</div>
+            </div>
             """, 
             unsafe_allow_html=True
         )
         
-        try:
-            response_stream = client.models.generate_content_stream(
-                model="gemini-2.5-flash", 
-                contents=api_contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=SCHOOL_DATA, 
-                    temperature=0.4
-                )
-            )
-            
-            typing_placeholder.empty()
-            st.write("✨ ")
-            full_response = st.write_stream((chunk.text for chunk in response_stream if chunk.text))
-            st.session_state.messages.append({"role": "assistant", "text": full_response})
-            
-        except Exception as e:
-            typing_placeholder.empty()
-            st.error(f"Error: {e}")
-            
+        st.write("✨ ")
+        full_response = st.write_stream((chunk.text for chunk in response_stream if chunk.text))
+        st.session_state.messages.append({"role": "assistant", "text": full_response})
+        st.markdown("<hr style='border: none; border-top: 1px solid #f3f4f6; margin: 10px 0;'>", unsafe_allow_html=True)
+        
+    except Exception as e:
+        typing_placeholder.empty()
+        st.error(f"Error: {e}")
+        
