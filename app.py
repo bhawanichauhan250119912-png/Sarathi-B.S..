@@ -81,29 +81,33 @@ for msg in st.session_state.messages:
         content = f"<span class='user-msg-hook'></span>{msg['text']}" if msg["role"] == "user" else msg["text"]
         st.markdown(content, unsafe_allow_html=True)
 
-# 9. Main Chat Loop
-if user_input := st.chat_input("Ask me anything about the school..."):
-    # Add to state
-    st.session_state.messages.append({"role": "user", "text": user_input})
-    with st.chat_message("user"):
-        st.markdown(f"<span class='user-msg-hook'></span>{user_input}", unsafe_allow_html=True)
-
-    # API Request
-    api_contents = [types.Content(role="user" if m["role"] == "user" else "model", parts=[types.Part.from_text(text=m["text"])]) for m in st.session_state.messages]
-
+    # 9. Corrected Main Chat Loop
     with st.chat_message("assistant", avatar=BLUE_SMILE_AVATAR):
         typing = st.empty()
         typing.markdown("💬 *Sarathi is thinking...*")
         try:
-            response = client.models.generate_content_stream(
-                model="gemini-2.5-flash", 
+            # Generate the stream
+            response_stream = client.models.generate_content_stream(
+                model="gemini-2.0-flash", 
                 contents=api_contents,
                 config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA, temperature=0.7)
             )
-            typing.empty()
-            full_response = st.write_stream(response)
+            
+            # Helper function to extract text from chunks
+            def stream_generator():
+                for chunk in response_stream:
+                    if chunk.text:
+                        yield chunk.text
+            
+            typing.empty() # Animation hatao
+            
+            # Now stream ONLY the text
+            full_response = st.write_stream(stream_generator())
+            
+            # Save to history
             st.session_state.messages.append({"role": "assistant", "text": full_response})
+            
         except Exception as e:
             typing.empty()
-            st.error(f"Something went wrong: {e}")
+            st.error(f"Error aayega: {e}")
             
