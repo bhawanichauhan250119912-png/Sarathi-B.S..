@@ -30,7 +30,7 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* 2. Chat Message Grid & Transparent Bubble Force */
+    /* 2. Chat Message Grid & Text Color Correction (Strict Black) */
     [data-testid="stChatMessage"] { 
         background-color: transparent !important; 
         border: none !important; 
@@ -38,26 +38,28 @@ st.markdown("""
         padding: 0.8rem 0rem !important;
     }
     
-    /* Assistant Area */
-    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) [data-testid="stMarkdownContainer"] {
-        background-color: #ffffff !important; 
-        color: #1f2937 !important; 
-        padding: 5px 10px !important;
+    /* Assistant Response Global Text Color Force to Dark Black */
+    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) [data-testid="stMarkdownContainer"],
+    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) p,
+    .stMarkdown, p, span, div {
+        color: #1f2937 !important; /* Force all text outputs to be crisp dark grey/black */
     }
     
-    /* User Chat Bubble - Clean Rounded Panel */
+    /* User Chat Bubble - Clean Rounded Panel with Dark Text */
     [data-testid="stChatMessage"]:has(.user-msg-hook) { 
         display: flex !important; 
         flex-direction: row-reverse !important; 
     }
     [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stMarkdownContainer"] {
         background-color: #f0f2f5 !important; 
-        color: #1f2937 !important; 
         border-radius: 20px !important; 
         padding: 12px 20px !important;
     }
+    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stMarkdownContainer"] p {
+        color: #1f2937 !important;
+    }
     
-    /* Streamlit के पुराने डिफ़ॉल्ट अवतार ब्लॉक्स को पूरी तरह छुपाएं */
+    /* Hide Streamlit Native Avatars */
     [data-testid="stChatMessage"] [data-testid="stChatAvatar"] { 
         display: none !important; 
     }
@@ -79,51 +81,28 @@ st.markdown("""
         animation: floatingBall 3s infinite ease-in-out;
         flex-shrink: 0;
     }
-    /* Smiley Faces Inside the 3D Ball using CSS Pseudo-elements */
     .skyblue-3d-ball::before, .skyblue-3d-ball::after {
-        content: '';
-        position: absolute;
-        background: #ffffff;
+        content: ''; position: absolute; background: #ffffff;
     }
-    /* Eyes */
     .skyblue-3d-ball::before {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        top: 12px;
-        left: 10px;
-        box-shadow: 11px 0 #ffffff;
+        width: 4px; height: 4px; border-radius: 50%; top: 12px; left: 10px; box-shadow: 11px 0 #ffffff;
     }
-    /* Smile Path */
     .skyblue-3d-ball::after {
-        width: 14px;
-        height: 7px;
-        background: transparent;
-        border: 2px solid #ffffff;
-        border-top: none;
-        border-radius: 0 0 14px 14px;
-        top: 16px;
-        left: 10px;
+        width: 14px; height: 7px; background: transparent; border: 2px solid #ffffff; border-top: none; border-radius: 0 0 14px 14px; top: 16px; left: 10px;
     }
     
     /* Main Large Branding Avatar Animation */
     .header-logo-3d {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
+        width: 70px; height: 70px; border-radius: 50%;
         background: radial-gradient(circle at 30% 30%, #e0f2fe, #38bdf8 40%, #0369a1 90%);
         box-shadow: 0 10px 20px rgba(3, 105, 161, 0.25), inset -5px -5px 12px rgba(0,0,0,0.25);
-        margin: 0 auto;
-        position: relative;
-        animation: floatingBall 3s infinite ease-in-out;
+        margin: 0 auto; position: relative; animation: floatingBall 3s infinite ease-in-out;
     }
     .header-logo-3d::before {
-        content: ''; position: absolute; background: #ffffff;
-        width: 8px; height: 8px; border-radius: 50%; top: 22px; left: 20px; box-shadow: 22px 0 #ffffff;
+        content: ''; position: absolute; background: #ffffff; width: 8px; height: 8px; border-radius: 50%; top: 22px; left: 20px; box-shadow: 22px 0 #ffffff;
     }
     .header-logo-3d::after {
-        content: ''; position: absolute; background: transparent;
-        width: 28px; height: 14px; border: 4px solid #ffffff; border-top: none; border-radius: 0 0 28px 28px; top: 32px; left: 21px;
+        content: ''; position: absolute; background: transparent; width: 28px; height: 14px; border: 4px solid #ffffff; border-top: none; border-radius: 0 0 28px 28px; top: 32px; left: 21px;
     }
 
     @keyframes floatingBall { 
@@ -131,19 +110,27 @@ st.markdown("""
         50% { transform: translateY(-6px); } 
     }
 
-    /* 4. Complete Removal of Black/Dark Color from Chat Input Box */
+    /* 4. Chat Input Text Color & Sky Blue Send Arrow Fix */
     div[data-testid="stChatInput"], 
-    div[data-testid="stChatInput"] > div,
-    div[data-testid="stChatInput"] textarea {
+    div[data-testid="stChatInput"] > div {
         background-color: #EAF2FC !important;
-        color: #1f2937 !important;
         border: none !important;
         box-shadow: none !important;
-    }
-    div[data-testid="stChatInput"] {
         border-radius: 30px !important;
-        padding: 6px 16px !important;
-        bottom: 20px !important;
+    }
+    div[data-testid="stChatInput"] textarea {
+        background-color: transparent !important;
+        color: #1f2937 !important; /* Text input explicitly black */
+        -webkit-text-fill-color: #1f2937 !important;
+    }
+    div[data-testid="stChatInput"] textarea::placeholder {
+        color: #6b7280 !important; /* Placeholder color */
+        -webkit-text-fill-color: #6b7280 !important;
+    }
+    /* Sky Blue Sending Arrow */
+    div[data-testid="stChatInput"] button svg {
+        fill: #38bdf8 !important;
+        color: #38bdf8 !important;
     }
     div[data-testid="stChatInput"] button {
         background-color: transparent !important;
@@ -151,16 +138,10 @@ st.markdown("""
 
     /* 5. Typing Indicator layout */
     .typing-container {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-style: italic;
-        color: #6b7280;
-        padding: 5px 0;
+        display: flex; align-items: center; gap: 5px; font-style: italic; color: #6b7280; padding: 5px 0;
     }
     .bounce-dot {
-        width: 6px; height: 6px; background-color: #38bdf8; border-radius: 50%;
-        display: inline-block; animation: dotBounce 1.4s infinite ease-in-out both;
+        width: 6px; height: 6px; background-color: #38bdf8; border-radius: 50%; display: inline-block; animation: dotBounce 1.4s infinite ease-in-out both;
     }
     .bounce-dot:nth-child(1) { animation-delay: -0.32s; }
     .bounce-dot:nth-child(2) { animation-delay: -0.16s; }
@@ -181,7 +162,7 @@ if "messages" not in st.session_state:
 # 4. EXCLUSIVE SCHOOL DATA & STRICT LANGUAGE RULES
 # ==========================================
 SCHOOL_DATA = """
-तुम 'प्रधान链पब्लिक सीनियर सेकेंडरी स्कूल', सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो।
+तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल', सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो।
 तुम्हारा exclusive domain सिर्फ 'प्रधान पब्लिक स्कूल' है।
 
 तुम्हारे पास स्कूल की पूरी जानकारी है:
@@ -197,7 +178,7 @@ SCHOOL_DATA = """
 1. Language Alignment Rule: जिस भाषा या स्टाइल में यूजर बात करे, तुम्हें strictly उसी भाषा में जवाब देना है। 
    - अगर यूजर Pure Hindi (जैसे: "प्रिंसिपल कौन है?") में पूछे, तो शुद्ध हिंदी में जवाब दो।
    - अगर यूजर Hinglish (जैसे: "School ki timings kya hai?") में पूछे, तो वैसे ही रोमन स्क्रिप्ट/Hinglish में जवाब दो।
-   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदलो।
+   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदललो।
 2. Response Formatting: हमेशा बुलेट पॉइंट्स, बोल्ड टेक्स्ट या टेबल का प्रयोग करें। बड़ा पैराग्राफ बिल्कुल न लिखें।
 3. Guardrails: स्कूल के बाहर के किसी भी सवाल को विनम्रता से रिजेक्ट करें।
 4. Uncertainty: सटीक जानकारी न होने पर स्कूल एडमिनिस्ट्रेशन डेस्क से संपर्क करने को कहें।
@@ -215,12 +196,10 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("🕒 Recent Chats")
     
-    # Dynamic list of recent messages submitted by user
     user_queries = [m["text"] for m in st.session_state.messages if m["role"] == "user"]
     if not user_queries:
         st.caption("No recent conversations.")
     else:
-        # Unique and unique entries only up to last 5
         seen = set()
         unique_queries = [x for x in user_queries if not (x in seen or seen.add(x))][-5:]
         for q in reversed(unique_queries):
@@ -258,14 +237,13 @@ for msg in st.session_state.messages:
         with st.chat_message("user"):
             st.markdown(f"<span class='user-msg-hook'></span>{msg['text']}", unsafe_allow_html=True)
     else:
-        # Custom HTML wrapping for 3D Ball Avatar layout
         st.markdown(
             f"""
             <div class='avatar-3d-box'>
                 <div class='skyblue-3d-ball'></div>
                 <div style='font-weight: 600; color: #4b5563; font-size: 14px;'>Sarathi AI</div>
             </div>
-            <div>✨ {msg['text']}</div>
+            <div style='color: #1f2937; font-weight: 500;'>✨ {msg['text']}</div>
             <hr style='border: none; border-top: 1px solid #f3f4f6; margin: 10px 0;'>
             """, 
             unsafe_allow_html=True
@@ -275,12 +253,10 @@ for msg in st.session_state.messages:
 # 9. CHAT INPUT & RESPONSE LOGIC
 # ==========================================
 if user_input := st.chat_input("Ask me anything about the school..."):
-    # Append & Display User Input
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user"):
         st.markdown(f"<span class='user-msg-hook'></span>{user_input}", unsafe_allow_html=True)
 
-    # Format historical chain for API
     api_contents = [
         types.Content(
             role="user" if m["role"] == "user" else "model", 
@@ -288,7 +264,6 @@ if user_input := st.chat_input("Ask me anything about the school..."):
         ) for m in st.session_state.messages
     ]
 
-    # Assistant Response Setup
     typing_placeholder = st.empty()
     typing_placeholder.markdown(
         """
@@ -315,10 +290,8 @@ if user_input := st.chat_input("Ask me anything about the school..."):
             )
         )
         
-        # Clear loading animation state
         typing_placeholder.empty()
         
-        # Render clean Assistant Panel header before stream
         st.markdown(
             """
             <div class='avatar-3d-box'>
