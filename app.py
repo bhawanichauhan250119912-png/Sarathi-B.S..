@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. SEAMLESS INTERFACE, 3D GRAPHICS & FIXED INPUT CSS
+# 2. FIXED INTERFACE & LIGHT SKYBLUE INPUT CSS
 # ==========================================
 st.markdown("""
     <style>
@@ -131,22 +131,27 @@ st.markdown("""
         50% { opacity: 1; transform: scale(1.02); color: #0369a1; }
     }
 
-    /* 🚨 FIXED: CHAT INPUT AREA AND TEXT COLOR OVERHAUL 🚨 */
-    /* Remove any forced dark/black backgrounds from the bottom layout block */
-    [data-testid="stBottomBlockContainer"], div[class*="stChatInputContainer"] {
+    /* 🚨 ULTIMATE FIX FOR THE BLACK INPUT STRIP (As seen in 74617.jpg) 🚨 */
+    /* Force total transparent/white override on the entire sticky bottom region wrapper */
+    div[data-testid="stBottom"], 
+    div[data-testid="stBottomBlockContainer"], 
+    div[class*="stChatInputContainer"], 
+    .stChatInput {
         background-color: #ffffff !important;
+        background: #ffffff !important;
+        border: none !important;
     }
     
-    /* Make the core chat input box capsule a beautiful Light Skyblue */
+    /* Transforming the Chat Input Box Capsule into Light Skyblue */
     div[data-testid="stChatInput"] {
-        background-color: #EAF2FC !important;
+        background-color: #e0f2fe !important; /* Light Skyblue Color */
         border: 1px solid #bae6fd !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important;
+        box-shadow: 0 4px 12px rgba(3, 105, 161, 0.1) !important;
         border-radius: 30px !important;
         padding: 4px 12px !important;
     }
     
-    /* Force typed text inside the input box to be completely Crisp Black */
+    /* Strictly Force Text color inside Input Area to be Crisp Solid Black */
     div[data-testid="stChatInput"] textarea {
         background-color: transparent !important;
         color: #1f2937 !important; 
@@ -158,10 +163,10 @@ st.markdown("""
         -webkit-text-fill-color: #6b7280 !important;
     }
     
-    /* Sky Blue Send Icon Button */
+    /* Professional Sky Blue Send Arrow Button */
     div[data-testid="stChatInput"] button svg {
-        fill: #38bdf8 !important;
-        color: #38bdf8 !important;
+        fill: #0284c7 !important;
+        color: #0284c7 !important;
     }
     div[data-testid="stChatInput"] button {
         background-color: transparent !important;
@@ -202,14 +207,14 @@ SCHOOL_DATA = """
 - एग्जामिनर: जगत प्रताप चौहान सर।
 - फैकल्टी: कविता यादव मैम (इतिहास/भूगोल), विजय राठौर सर (राजनीति विज्ञान/इंग्लिश), विपिन अग्रवाल सर (गणित)।
 - टॉपर्स: 10वीं देव छोंकर (98%), 12वीं प्रिया चौहान (96%)।
-- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), केमिस्ट्री लैब।
+- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), chemistry लैब।
 - समय: गर्मी (सुबह 7 से 1 बजे), सर्दी (सुबह 8 से 2 बजे)।
 
 [STRICT LANGUAGE & SYSTEM RULES]:
 1. Language Alignment Rule: जिस भाषा या स्टाइल में यूजर बात करे, तुम्हें strictly उसी भाषा में जवाब देना है। 
    - अगर यूजर Pure Hindi (जैसे: "प्रिंसिपल कौन है?") में पूछे, तो शुद्ध हिंदी में जवाब दो।
    - अगर यूजर Hinglish (जैसे: "School ki timings kya hai?") में पूछे, तो वैसे ही रोमन स्क्रिप्ट/Hinglish में जवाब दो।
-   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदललो।
+   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदलो।
 2. Response Formatting: हमेशा बुलेट पॉइंट्स, बोल्ड टेक्स्ट या टेबल का प्रयोग करें। बड़ा पैराग्राफ बिल्कुल न लिखें।
 3. Guardrails: स्कूल के बाहर के किसी भी सवाल को विनम्रता से रिजेक्ट करें।
 4. Uncertainty: सटीक जानकारी न होने पर स्कूल एडमिनिस्ट्रेशन डेस्क से संपर्क करने को कहें।
