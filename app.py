@@ -4,123 +4,102 @@ from google.genai import types
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Sarathi-B.S.", page_icon="😊", layout="centered")
+st.set_page_config(page_title="Sarathi-B.S.", page_icon="🌐", layout="centered")
 
-# 2. WELCOME SPLASH SCREEN (Req 5)
+# 2. 3D Sky-Blue Professional Smile (Custom SVG Base64)
+# Yeh ek code-generated 3D sky-bluish smiling ball hai.
+BLUE_SMILE_B64 = "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImdyYWQxIiBjeD0iMzUlIiBjeT0iMjUlIiByPSI2NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlMGY3ZmEiIC8+PHN0b3Agb2Zmc2V0PSI0MCUiIHN0b3AtY29sb3I9IiM0ZmMzZjciIC8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDI3N2JkIiAvPjwvcmFkaWFsR3JhZGllbnQ+PGZpbHRlciBpZD0ic2hhZG93Ij48ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iNCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+PC9maWx0ZXI+PC9kZWZzPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ1IiBmaWxsPSJ1cmwoI2dyYWQxKSIgZmlsdGVyPSJ1cmwoI3NoYWRvdykiIC8+PGNpcmNsZSBjeD0iMzUiIGN5PSI0MCIgcj0iNiIgZmlsbD0iI2ZmZmZmZiIgLz48Y2lyY2xlIGN4PSI2NSIgY3k9IjQwIiByPSI2IiBmaWxsPSIjZmZmZmZmIiAvPjxwYXRoIGQ9Ik0gMzAgNjAgUSA1MCA3NSA3MCA2MCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjYiIGZpbGw9InRyYW5zcGFyZW50IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4="
+BLUE_SMILE_AVATAR = f"data:image/svg+xml;base64,{BLUE_SMILE_B64}"
+
+# 3. Welcome Splash Screen (Runs only once)
 if "app_started" not in st.session_state:
     splash = st.empty()
     with splash.container():
-        st.markdown("""
+        st.markdown(f"""
         <style>
-        @keyframes bounce-splash {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.1); }
-        }
-        .splash-emoji {
-            font-size: 100px;
+        @keyframes bounce-splash {{
+            0%, 100% {{ transform: translateY(0) scale(1); }}
+            50% {{ transform: translateY(-20px) scale(1.1); }}
+        }}
+        .splash-emoji {{
             text-align: center;
             animation: bounce-splash 1.5s infinite ease-in-out;
-            color: #ff6b6b; /* Light reddish */
-        }
-        .splash-text {
-            color: #1f2937;
-            text-align: center;
-            font-family: sans-serif;
-            margin-top: 20px;
-            font-size: 26px;
-            font-weight: bold;
-        }
+        }}
+        .splash-text {{
+            color: #1f2937; text-align: center; font-family: sans-serif;
+            margin-top: 20px; font-size: 26px; font-weight: bold;
+        }}
         </style>
         <div style="height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <div class="splash-emoji">😊</div>
+            <div class="splash-emoji"><img src="{BLUE_SMILE_AVATAR}" width="100"></div>
             <div class="splash-text">[Welcome to Pradhan Public School]</div>
         </div>
         """, unsafe_allow_html=True)
-        time.sleep(3) # Wait for 3 seconds
-    splash.empty() # Remove splash screen after 3 seconds
+        time.sleep(2.5) 
+    splash.empty() 
     st.session_state.app_started = True
 
-# 3. PROFESSIONAL & CLEAN CSS (Req 2, 3, 4)
+# 4. Professional CSS & Layout Formatting
 st.markdown("""
     <style>
     /* Background */
     .stApp { background-color: #ffffff !important; }
     
-    /* Input Box Styling */
+    /* Transparent Chat Wrapper */
+    [data-testid="stChatMessage"] {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 5px !important;
+    }
+    
+    /* ------------------------------------------- */
+    /* ASSISTANT MESSAGE STYLING (Left Aligned)    */
+    /* ------------------------------------------- */
+    [data-testid="stChatMessage"]:not(:has(.user-msg-hook)) [data-testid="stMarkdownContainer"] {
+        background-color: #f3f4f6 !important;
+        color: #1f2937 !important;
+        border-radius: 15px 15px 15px 0px !important;
+        padding: 12px 18px !important;
+        width: fit-content !important;
+        max-width: 85% !important;
+    }
+
+    /* ------------------------------------------- */
+    /* USER MESSAGE STYLING (Right Aligned)        */
+    /* ------------------------------------------- */
+    [data-testid="stChatMessage"]:has(.user-msg-hook) {
+        display: flex !important;
+        flex-direction: row-reverse !important;
+    }
+    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stMarkdownContainer"] {
+        background-color: #e0f2fe !important; /* Light sky blue bubble */
+        color: #0369a1 !important;
+        border-radius: 15px 15px 0px 15px !important;
+        padding: 12px 18px !important;
+        width: fit-content !important;
+        max-width: 85% !important;
+    }
+    
+    /* STRICTLY HIDE USER AVATAR */
+    [data-testid="stChatMessage"]:has(.user-msg-hook) [data-testid="stChatAvatar"] {
+        display: none !important; 
+    }
+    
+    /* Chat Input Box */
     [data-testid="stChatInput"] {
         background-color: #f8f9fa !important;
         border: 1px solid #d1d5db !important;
         border-radius: 12px !important;
     }
-    
-    /* Continuous Animation for Header Logo */
-    @keyframes pulse-smile {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.15); text-shadow: 0 0 10px rgba(255,107,107,0.5); }
-        100% { transform: scale(1); }
-    }
-    .header-logo {
-        display: inline-block;
-        animation: pulse-smile 2s infinite ease-in-out;
-        font-size: 42px;
-        color: #ff6b6b;
-    }
 
-    /* Message Bubbles layout (Not full width) */
-    [data-testid="stChatMessage"] {
-        background-color: transparent !important;
-        padding: 5px 0px !important;
-    }
-    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] {
-        width: fit-content !important;
-        max-width: 80% !important;
-        padding: 12px 18px !important;
-        border-radius: 20px !important;
-        display: inline-block !important;
-        word-wrap: break-word !important;
-    }
-
-    /* HIDE USER AVATAR entirely */
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stChatAvatar"] {
-        display: none !important;
-    }
-
-    /* USER MESSAGE (Right Alignment & Blue Bubble) */
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        flex-direction: row-reverse !important;
-    }
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stMarkdownContainer"] {
-        background-color: #3b82f6 !important;
-        color: white !important;
-        border-bottom-right-radius: 4px !important;
-    }
-
-    /* ASSISTANT MESSAGE (Left Alignment & Gray Bubble) */
-    [data-testid="stChatMessage"]:not(:has([data-testid="chatAvatarIcon-user"])) [data-testid="stMarkdownContainer"] {
-        background-color: #f3f4f6 !important;
-        color: #1f2937 !important;
-        border-bottom-left-radius: 4px !important;
-    }
-
-    /* Typing Animation CSS */
+    /* 3-Dots Typing Animation CSS */
     .typing-container {
-        display: flex;
-        align-items: center;
-        background-color: #f3f4f6;
-        padding: 12px 18px;
-        border-radius: 20px;
-        border-bottom-left-radius: 4px;
-        width: fit-content;
-        color: #6b7280;
-        font-family: sans-serif;
+        display: flex; align-items: center; background-color: #f3f4f6;
+        padding: 12px 18px; border-radius: 15px 15px 15px 0px; width: fit-content;
     }
     .dot {
-        height: 8px; width: 8px;
-        background-color: #ff6b6b;
-        border-radius: 50%;
-        display: inline-block;
-        margin: 0 3px;
-        animation: bounce-dot 1.4s infinite ease-in-out both;
+        height: 8px; width: 8px; background-color: #0288d1; border-radius: 50%;
+        display: inline-block; margin: 0 3px; animation: bounce-dot 1.4s infinite ease-in-out both;
     }
     .dot:nth-child(1) { animation-delay: -0.32s; }
     .dot:nth-child(2) { animation-delay: -0.16s; }
@@ -128,19 +107,30 @@ st.markdown("""
         0%, 80%, 100% { transform: scale(0); }
         40% { transform: scale(1); }
     }
-    .typing-text { margin-left: 10px; font-size: 14px; font-weight: 500; font-style: italic;}
+    .typing-text { margin-left: 10px; font-size: 14px; font-style: italic; color: #6b7280; font-family: sans-serif;}
+
+    /* Header Logo Hover Animation */
+    @keyframes hover-smile {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        50% { transform: translateY(-5px) scale(1.05); }
+    }
+    .header-logo { width: 55px; animation: hover-smile 3s infinite ease-in-out; }
     </style>
 """, unsafe_allow_html=True)
 
-# 4. Header with Animated Logo
-st.markdown("<h1 style='text-align: center; color: #111827;'><span class='header-logo'>😊</span> Sarathi-B.S.</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #6b7280;'>Your Intelligent School Companion ✨</p>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
+# 5. Header with 3D Sky-Blue Smile
+st.markdown(f"""
+    <div style='text-align: center;'>
+        <img src='{BLUE_SMILE_AVATAR}' class='header-logo'>
+        <h1 style='color: #111827; margin: 0;'>Sarathi-B.S.</h1>
+        <p style='color: #6b7280; margin-top: 5px;'>Your Intelligent School Companion ✨</p>
+    </div>
+    <br>
+""", unsafe_allow_html=True)
 
-# 5. REFINED SCHOOL DATA (Req 1 & Req 6)
+# 6. School Instructions Context
 SCHOOL_DATA = """
-तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' (Pradhan Public Senior Secondary School), सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो। 
-
+तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल', सीगना, आगरा के आधिकारिक AI गाइड 'Sarathi-B.S.' हो। 
 तुम्हारे पास स्कूल की पूरी जानकारी है:
 - प्रिंसिपल: श्रीमती मोनिका छोंकर मैम (अनुशासित और बेहतरीन नेतृत्व)।
 - डायरेक्टर: मानवेंद्र छोंकर सर (विनम्र और सहयोगी)।
@@ -150,45 +140,46 @@ SCHOOL_DATA = """
 - सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), केमिस्ट्री लैब।
 - समय: गर्मी (सुबह 7 से 1 बजे), सर्दी (सुबह 8 से 2 बजे)।
 
-**तुम्हारे लिए सख्त निर्देश (Strict Instructions):**
-1. **भाषा:** यूज़र जिस भाषा में पूछे उसी में जवाब दो (English, Hindi, या Hinglish)। प्राकृतिक और फ्लोइंग भाषा का उपयोग करो।
-2. **प्रारूप (Formatting):** जवाब हमेशा विस्तार से (detailed) और बुलेट पॉइंट्स (point-wise) में दो ताकि पढ़ने में आसानी हो।
-3. **व्यवहार:** बहुत ही दोस्ताना (friendly), विनम्र और सम्मानजनक रहो। 
-4. **इमोजी (Emojis):** हर वाक्य और पॉइंट के साथ उपयुक्त और खुशमिज़ाज इमोजी (😊, 🎓, ✨, 📚, 🔬) का भरपूर इस्तेमाल करो।
+निर्देश:
+1. हमेशा यूज़र की भाषा (English, Hindi, या Hinglish) में बात करो।
+2. जवाब हमेशा विस्तार से और बुलेट पॉइंट्स में दो।
+3. बहुत ही दोस्ताना (friendly) रहो और उपयुक्त इमोजीस का इस्तेमाल करो।
 """
 
-# 6. API Setup
+# 7. API Setup
 api_key = st.secrets.get("GOOGLE_API_KEY") or st.sidebar.text_input("API Key:", type="password")
 if not api_key: st.stop()
 client = genai.Client(api_key=api_key)
 
-# 7. Session Logic & Memory
-if "chat_session" not in st.session_state:
-    st.session_state.chat_session = client.chats.create(
-        model="gemini-2.5-flash", 
-        config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA, temperature=0.7)
-    )
-
+# 8. Memory State (Only store messages, NO chat_session to prevent closing error)
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Show past messages
+# Display Old Messages
 for msg in st.session_state.messages:
-    # Use standard user avatar (hidden by CSS) and custom reddish emoji for assistant
-    avatar_icon = "😊" if msg["role"] == "assistant" else "user"
-    with st.chat_message(msg["role"], avatar=avatar_icon):
-        st.markdown(msg["text"])
+    if msg["role"] == "user":
+        with st.chat_message("user"):
+            # The span hook allows CSS to right-align the message
+            st.markdown("<span class='user-msg-hook'></span>" + msg["text"], unsafe_allow_html=True)
+    else:
+        with st.chat_message("assistant", avatar=BLUE_SMILE_AVATAR):
+            st.markdown(msg["text"])
 
-# 8. Chat Input & Processing
+# 9. Chat Processing & Generation
 if user_input := st.chat_input("Ask me anything..."):
-    # Add User Message
+    # Store User Input
     st.session_state.messages.append({"role": "user", "text": user_input})
-    with st.chat_message("user", avatar="user"): 
-        st.markdown(user_input)
+    with st.chat_message("user"): 
+        st.markdown("<span class='user-msg-hook'></span>" + user_input, unsafe_allow_html=True)
 
-    # Add Assistant Message with Typing Animation
-    with st.chat_message("assistant", avatar="😊"):
-        # Temporary placeholder for 3-dots typing animation
+    # Rebuild Message History for API explicitly (Fixes "Client Closed" issue)
+    api_contents = []
+    for msg in st.session_state.messages:
+        role = "user" if msg["role"] == "user" else "model"
+        api_contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg["text"])]))
+
+    # Display typing indicator temporarily
+    with st.chat_message("assistant", avatar=BLUE_SMILE_AVATAR):
         typing_indicator = st.empty()
         typing_indicator.markdown("""
             <div class="typing-container">
@@ -198,23 +189,24 @@ if user_input := st.chat_input("Ask me anything..."):
         """, unsafe_allow_html=True)
         
         try:
-            # Get streaming response
-            response_stream = st.session_state.chat_session.send_message_stream(user_input)
+            # Create a FRESH call directly passing the history content
+            response_stream = client.models.generate_content_stream(
+                model="gemini-2.5-flash", 
+                contents=api_contents,
+                config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA, temperature=0.7)
+            )
+            
+            # Clear animation and write stream
+            typing_indicator.empty()
             
             def stream_generator():
                 for chunk in response_stream:
                     yield chunk.text
                     
-            # Clear the typing animation just before writing the real text
-            typing_indicator.empty() 
-            
-            # Write stream output
             full_response = st.write_stream(stream_generator)
-            
-            # Save to memory
             st.session_state.messages.append({"role": "assistant", "text": full_response})
             
         except Exception as e:
             typing_indicator.empty()
-            st.error(f"Error: {e}")
+            st.error(f"Error fetching response: {e}")
             
