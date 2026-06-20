@@ -32,18 +32,18 @@ SCHOOL_DATA = """
 - एग्जामिनर: जगत प्रताप चौहान सर।
 - फैकल्टी: कविता यादव मैम (इतिहास/भूगोल), विजय राठौर सर (राजनीति विज्ञान/इंग्लिश), विपिन अग्रवाल सर (गणित)।
 - टॉपर्स: 10वीं देव छोंकर (98%), 12वीं प्रिया चौहान (96%)।
-- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), केमिस्ट्री लैब।
+- सुविधाएं: स्मार्ट क्लासेस, बायोलॉजी लैब (असली सैंपल्स के साथ), chemistry लैब।
 - समय: गर्मी (सुबह 7 से 1 बजे), सर्दी (सुबह 8 से 2 बजे)।
 
 [MANDATORY SYSTEM RULES]:
 1. Response Formatting: हमेशा अपने उत्तर को सिंपल Markdown (जैसे Bullet points, bold text, या tables) में ही व्यवस्थित (structured) रखें। कभी भी बड़ा और उबाऊ पैराग्राफ न दें।
 2. Guardrails & Safety: यदि कोई छात्र या यूजर स्कूल से हटकर व्यक्तिगत (personal), राजनीतिक (political), या किसी भी प्रकार का अनुचित (inappropriate) सवाल पूछे, तो पूरी तरह विनम्रता से मना कर दें: "I am here to assist you with school-related queries only."
 3. Handling Uncertainty: यदि स्कूल डेटा (जैसे विशिष्ट फीस, विशेष छुट्टियां) का सटीक जवाब उपलब्ध न हो, तो गलत अनुमान लगाने के बजाय कहें: "Please contact the school administration desk at [Phone/Email] for the most accurate details."
-4. Tone: हर प्रतिक्रिया (response) अत्यंत व्यावसायिक (professional), विनम्र (polite) और छात्र-अनुकूल (student-friendly) होनी चाहिए।
+4. Tone: हर प्रतिक्रिया (response) अत्यंत व्यावसायिक (professional), विनम्र (polite) und छात्र-अनुकूल (student-friendly) होनी चाहिए।
 """
 
 # ==========================================
-# 4. ADVANCED SEAMLESS & ANIMATED CSS
+# 4. ADVANCED SEAMLESS & ANIMATED CSS (Fixed Typo)
 # ==========================================
 st.markdown("""
     <style>
@@ -151,7 +151,7 @@ st.markdown("""
         40% { transform: scale(1.0) translateY(-6px); }
     }
     </style>
-""", unsafe_allowed_html=True)
+""", unsafe_allow_html=True)
 
 # ==========================================
 # 5. SESSION STATE
@@ -182,15 +182,16 @@ st.markdown(
     </div>
     <br>
     """, 
-    unsafe_allowed_html=True
+    unsafe_allow_html=True
 )
 
 # ==========================================
-# 8. API CONNECTION
+# 8. API CONNECTION (Strictly from Secrets)
 # ==========================================
-api_key = st.secrets.get("GOOGLE_API_KEY") or st.sidebar.text_input("API Key:", type="password")
+# Yeh bina kisi UI input ke seedhe aapke Streamlit Cloud Secrets se key read karega
+api_key = st.secrets.get("GOOGLE_API_KEY") or st.secrets.get("GEMINI_API_KEY")
 if not api_key: 
-    st.warning("Please enter your API Key in the sidebar.")
+    st.error("Error: Streamlit Secrets mein 'GOOGLE_API_KEY' missing hai!")
     st.stop()
 client = genai.Client(api_key=api_key)
 
@@ -201,21 +202,18 @@ for msg in st.session_state.messages:
     with st.chat_message("user" if msg["role"] == "user" else "assistant", avatar=None if msg["role"] == "user" else BLUE_SMILE_AVATAR):
         if msg["role"] == "user":
             content = f"<span class='user-msg-hook'></span>{msg['text']}"
-            st.markdown(content, unsafe_allowed_html=True)
+            st.markdown(content, unsafe_allow_html=True)
         else:
-            # Sparkle representation on actual messages
-            st.markdown(f"✨ {msg['text']}", unsafe_allowed_html=True)
+            st.markdown(f"✨ {msg['text']}", unsafe_allow_html=True)
 
 # ==========================================
 # 10. CHAT INPUT & ANIMATED RESPONSE LOGIC
 # ==========================================
 if user_input := st.chat_input("Ask me anything about the school..."):
-    # Append & Display User Message Immediately
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user"):
-        st.markdown(f"<span class='user-msg-hook'></span>{user_input}", unsafe_allowed_html=True)
+        st.markdown(f"<span class='user-msg-hook'></span>{user_input}", unsafe_allow_html=True)
 
-    # Format history structure for API
     api_contents = [
         types.Content(
             role="user" if m["role"] == "user" else "model", 
@@ -223,9 +221,7 @@ if user_input := st.chat_input("Ask me anything about the school..."):
         ) for m in st.session_state.messages
     ]
 
-    # Assistant Response Panel
     with st.chat_message("assistant", avatar=BLUE_SMILE_AVATAR):
-        # 1. Trigger Indicator Text and Bouncing Three-Dots Animation
         typing_placeholder = st.empty()
         typing_placeholder.markdown(
             """
@@ -236,11 +232,10 @@ if user_input := st.chat_input("Ask me anything about the school..."):
                 <div class='bounce-dot'></div>
             </div>
             """, 
-            unsafe_allowed_html=True
+            unsafe_allow_html=True
         )
         
         try:
-            # Request streaming generation from Gemini 2.5 Flash
             response_stream = client.models.generate_content_stream(
                 model="gemini-2.5-flash", 
                 contents=api_contents,
@@ -250,17 +245,12 @@ if user_input := st.chat_input("Ask me anything about the school..."):
                 )
             )
             
-            # 2. Smooth Transition: Clear typing state right before streaming text starts
             typing_placeholder.empty()
-            
-            # 3. Asynchronous Message Streaming with Sparkle Prefix
             st.write("✨ ")
             full_response = st.write_stream((chunk.text for chunk in response_stream if chunk.text))
-            
-            # Save final response state
             st.session_state.messages.append({"role": "assistant", "text": full_response})
             
         except Exception as e:
             typing_placeholder.empty()
             st.error(f"Error: {e}")
-    
+            
