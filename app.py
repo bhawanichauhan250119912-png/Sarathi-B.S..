@@ -32,7 +32,7 @@ st.markdown("""
 
     /* Hide Native Chat Blocks to Prevent Conflicting Styles */
     [data-testid="stChatMessage"] { 
-        background-color: transparent !important; 
+        background-color: #87CEFA !important; 
         border: none !important; 
         box-shadow: none !important;
         padding: 0px !important;
