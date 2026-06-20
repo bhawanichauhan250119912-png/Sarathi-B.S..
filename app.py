@@ -21,7 +21,24 @@ st.markdown("<br>", unsafe_allow_html=True) # Thoda space top par
 
 if os.path.exists("74424.png"):
     # Aapka professional logo screen par center-aligned dikhega
-    st.image("74424.png", width=130)
+    # Logo Animation (CSS)
+st.markdown("""
+    <style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    .logo-img {
+        animation: pulse 3s infinite;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 130px;
+    }
+    </style>
+    <img src="app/static/74424.png" class="logo-img">
+""", unsafe_allow_html=True)
 
 st.title("🤖 sarathi-B.S.")
 st.markdown("##### *Your Intelligent School Companion & AI Guide* ✨")
