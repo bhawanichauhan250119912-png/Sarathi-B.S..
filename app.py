@@ -2,74 +2,135 @@ import streamlit as st
 from google import genai
 from google.genai import types
 import time
-import os
 
-# 1. Page Configuration
-st.set_page_config(page_title="sarathi-B.S.", page_icon="logo.png", layout="centered")
+# 1. Page Configuration (Title Capitalized)
+st.set_page_config(page_title="Sarathi-B.S.", page_icon="🤖", layout="centered")
 
-# Logo Setup
-LOGO_FILE = "logo.png"
-school_logo = "🤖" 
-if os.path.exists(LOGO_FILE):
-    school_logo = LOGO_FILE
-
-# 2. Advanced CSS - Anti-Blur & High Quality 3D Animation
+# 2. PREMIUM CSS - Sky Blue Theme, Gemini Chat Bubbles & Animations
 st.markdown("""
     <style>
-    @keyframes breathing {
-        0% { transform: scale(1); filter: drop-shadow(0px 4px 8px rgba(255,255,255,0.15)); }
-        50% { transform: scale(1.05); filter: drop-shadow(0px 12px 20px rgba(255,255,255,0.3)); }
-        100% { transform: scale(1); filter: drop-shadow(0px 4px 8px rgba(255,255,255,0.15)); }
+    /* --- 1. Background Theme (Sky Blue Mix) --- */
+    .stApp {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
     }
-    [data-testid="stImage"] img {
-        animation: breathing 3.5s ease-in-out infinite;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        /* Anti-Blur CSS Rules */
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: high-quality;
-        object-fit: contain;
+    /* Force Text to be Dark on Light Background */
+    h1, h2, h3, h4, p, span {
+        color: #0f172a !important;
     }
-    [data-testid="stImage"] {
-        display: flex;
-        justify-content: center;
+
+    /* --- 2. Code-Based Animated Logo --- */
+    @keyframes floatAndGlow {
+        0% { transform: translateY(0px) scale(1); filter: drop-shadow(0px 5px 15px rgba(59, 130, 246, 0.3)); }
+        50% { transform: translateY(-12px) scale(1.08); filter: drop-shadow(0px 15px 25px rgba(59, 130, 246, 0.6)); }
+        100% { transform: translateY(0px) scale(1); filter: drop-shadow(0px 5px 15px rgba(59, 130, 246, 0.3)); }
+    }
+    .ai-logo {
+        font-size: 85px;
+        text-align: center;
+        animation: floatAndGlow 3.5s ease-in-out infinite;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    /* --- 3. Chat Input Box (No Red Border, Gemini Style) --- */
+    [data-testid="stChatInput"] {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 30px !important;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05) !important;
+        padding-right: 5px;
+    }
+    [data-testid="stChatInput"]:focus-within {
+        border: 2px solid #3b82f6 !important; /* Blue outline on typing */
+    }
+    [data-testid="stChatInput"] textarea {
+        color: #0f172a !important;
+    }
+    /* Send Button Arrow Style */
+    [data-testid="stChatInputSubmitButton"] {
+        background-color: #3b82f6 !important;
+        border-radius: 50% !important;
+        transition: 0.3s;
+    }
+    [data-testid="stChatInputSubmitButton"] svg {
+        fill: white !important; /* White Arrow */
+    }
+    [data-testid="stChatInputSubmitButton"]:hover {
+        background-color: #2563eb !important;
+        transform: scale(1.1);
+    }
+
+    /* --- 4. Chat Bubbles Alignment (Right & Left) --- */
+    /* Hide Default Human Avatar */
+    [data-testid="chatAvatarIcon-user"] {
+        display: none !important; 
+    }
+    
+    /* USER Message - Right Side (Blue Bubble) */
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+        flex-direction: row-reverse; /* Pushes to Right */
+        background-color: transparent !important;
+    }
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stMarkdownContainer"] {
+        background-color: #3b82f6 !important;
+        padding: 12px 20px;
+        border-radius: 20px 20px 0px 20px; /* Chat bubble tail */
+        display: inline-block;
+        box-shadow: 0px 4px 10px rgba(59, 130, 246, 0.2);
+    }
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) p {
+        color: #ffffff !important; /* White text for User */
+        margin: 0;
+    }
+
+    /* ASSISTANT Message - Left Side (White Bubble) */
+    [data-testid="stChatMessage"]:not(:has([data-testid="chatAvatarIcon-user"])) {
+        background-color: transparent !important;
+    }
+    [data-testid="stChatMessage"]:not(:has([data-testid="chatAvatarIcon-user"])) [data-testid="stMarkdownContainer"] {
+        background-color: #ffffff !important;
+        padding: 15px 20px;
+        border-radius: 20px 20px 20px 0px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    /* --- 5. 3-Dots Typing Animation --- */
+    .typing-box {
+        display: inline-flex;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 20px 20px 20px 0px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.03);
+        color: #3b82f6 !important;
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+    .dot {
+        animation: blink 1.4s infinite ease-in-out both;
+        font-size: 24px;
+        line-height: 10px;
+        margin-left: 3px;
+    }
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes blink {
+        0%, 80%, 100% { opacity: 0; transform: scale(0.8); }
+        40% { opacity: 1; transform: scale(1.2); }
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. SPLASH SCREEN (Starting Intro)
-if "splash_done" not in st.session_state:
-    st.session_state.splash_done = False
+# 3. Header & Custom Logo (Capitalized Name)
+st.markdown("<div class='ai-logo'>🤖</div>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; font-weight: 800;'>Sarathi-B.S.</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-style: italic; color: #64748b !important;'>Your Intelligent School Companion ✨</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-if not st.session_state.splash_done:
-    splash_holder = st.empty()
-    with splash_holder.container():
-        st.markdown("<br><br><br>", unsafe_allow_html=True)
-        if os.path.exists(LOGO_FILE):
-            # Size slightly reduced to prevent pixel stretching
-            st.image(LOGO_FILE, width=130) 
-        else:
-            st.markdown("<h1 style='text-align: center;'>🏫</h1>", unsafe_allow_html=True)
-            
-        st.markdown("<h1 style='text-align: center; font-weight: bold;'>🤖 sarathi-B.S.</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #888888; font-style: italic;'>Your Intelligent School Companion & AI Guide ✨</p>", unsafe_allow_html=True)
-        st.markdown("<br><h3 style='text-align: center; color: #FF4B4B; font-weight: bold;'>स्वागत है प्रधान पब्लिक स्कूल में! 👋</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #555555;'>सारथी सिस्टम लोड हो रहा है...</p>", unsafe_allow_html=True)
-    
-    time.sleep(4.0)
-    st.session_state.splash_done = True
-    st.rerun()
-
-# 4. MAIN CHAT INTERFACE
-main_header = st.container()
-with main_header:
-    if os.path.exists(LOGO_FILE):
-        st.image(LOGO_FILE, width=75) # Crisp size for chat header
-    st.markdown("<h2 style='text-align: center;'>🤖 sarathi-B.S.</h2>", unsafe_allow_html=True)
-    st.markdown("---")
-
-# API Key Secure Fetch
+# API Setup
 api_key = st.secrets.get("GOOGLE_API_KEY") or st.sidebar.text_input("API Key:", type="password")
 if not api_key:
     st.info("💡 **Setup Instruction:** Streamlit Secrets में GOOGLE_API_KEY सेट करें।")
@@ -77,79 +138,77 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 
-# 5. NEW STRICT MASTER DATA (Language Mirroring & Detailed Explanations)
+# 4. Strict Knowledge Base
 SCHOOL_DATA = """
-तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' (Pradhan Public Senior Secondary School) के अत्यंत बुद्धिमान और आधिकारिक AI गाइड 'sarathi-B.S.' हो। 
+तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के AI गाइड 'Sarathi-B.S.' हो। 
+नियम:
+1. हमेशा यूज़र की भाषा (English, Hindi, या Hinglish) में ही जवाब दो।
+2. विस्तार से जवाब दो और बुलेट पॉइंट्स का इस्तेमाल करो।
+3. हमेशा सम्मानजनक टोन रखो।
 
-🚨 **तुम्हारे 3 सबसे कड़े नियम (STRICT DIRECTIVES):**
-1. **100% Language Mirroring:** तुम्हें यूज़र की भाषा को तुरंत पकड़ना है। बिना यूज़र के कहे:
-   - If the user types in **English**, your ENTIRE response MUST be in fluent, professional, and grammatically perfect **English**.
-   - अगर यूज़र **हिंदी या Hinglish** में बात करे, तो तुम्हारा जवाब भी पूरी तरह प्राकृतिक **हिंदी/Hinglish** में होना चाहिए।
-2. **Deep & Detailed Explanations:** कभी भी 1-2 लाइन का छोटा जवाब मत देना। यूज़र जो भी पूछे, उसे बहुत ही विस्तार (Detail) से, अच्छे से समझाकर (Elaborate) जवाब दो। उसे ऐसा लगना चाहिए कि कोई बहुत ज्ञानी इंसान उसे समझा रहा है।
-3. **Tone & Formatting:** हमेशा सम्मानजनक (Sir/Ma'am/सर/मैम) रहो। जवाबों को सुंदर पैराग्राफ्स और स्पष्ट बुलेट पॉइंट्स में बांटो।
-
-🏛️ **स्कूल मैनेजमेंट (School Management Data):**
-- प्रिंसिपल (Principal): श्रीमती मोनिका छोंकर मैम (Mrs. Monika Chhonkar) - Highly disciplined, excellent leadership, and fluent in English.
-- डायरेक्टर (Director): मानवेंद्र छोंकर सर (Mr. Manvendra Chhonkar) - Very polite, calm, and highly supportive of students.
-- एग्जामिनर (Examiner): जगत प्रताप चौहान सर (Mr. Jagat Pratap Chauhan).
-- फीस काउंटर (Fee Counter): संतोष यादव सर (Mr. Santosh Yadav) और उनकी सहायक चंचल मैम (Ms. Chanchal).
-
-📍 **स्थान और कैंपस (Location & Infrastructure):**
-- पता: सीगना, आगरा (Singna, Agra).
-- कैंपस: इसमें एक विशाल असेंबली ग्राउंड, सुंदर हरा-भरा लॉन और खेलकूद (Sports) के लिए एक बहुत बड़ा प्लेग्राउंड है। स्कूल कड़े अनुशासन और खेल में आगरा में अव्वल रहने के लिए प्रसिद्ध है।
-
-🏆 **बोर्ड परीक्षा टॉपर्स (Board Exam Toppers):**
-- कक्षा 10वीं टॉपर: देव छोंकर (Dev Chhonkar) - 98%
-- कक्षा 12वीं टॉपर: प्रिया चौहान (Priya Chauhan) - 96%
-
-👨‍🏫 **कक्षा 11 फैकल्टी (Class 11 Faculty):**
-- कविता यादव मैम (Kavita Yadav Ma'am): इतिहास (History) और भूगोल (Geography) की विशेषज्ञ।
-- विजय राठौर सर (Vijay Rathore Sir): राजनीति विज्ञान (Political Science), फाइन आर्ट्स (Fine Arts) और English Grammar के बेहतरीन शिक्षक।
-- विपिन अग्रवाल सर (Vipin Agarwal Sir): गणित (Mathematics) के अत्यंत लोकप्रिय और जादुई शिक्षक।
-
-🧪 **सुविधाएं (Facilities):**
-- Smart Classes: सभी कक्षाएं आधुनिक तकनीक से लैस हैं।
-- Biology Lab: असली सैंपल्स (Real samples like fish, octopus, algae) उपलब्ध हैं जो इसे खास बनाते हैं।
-- Chemistry Lab: प्रयोगों के लिए उच्च स्तरीय और सुरक्षित केमिकल्स उपलब्ध हैं।
-
-⏰ **स्कूल का समय (Timings):**
-- गर्मियों में (Summer): सुबह 7:00 AM से दोपहर 1:00 PM.
-- सर्दियों में (Winter): सुबह 8:00 AM से दोपहर 2:00 PM.
+- प्रिंसिपल: श्रीमती मोनिका छोंकर मैम 
+- डायरेक्टर: मानवेंद्र छोंकर सर
+- एग्जामिनर: जगत प्रताप चौहान सर
+- फीस काउंटर: संतोष यादव सर
+- 10वीं टॉपर: देव छोंकर (98%) | 12वीं टॉपर: प्रिया चौहान (96%)
+- फैकल्टी: कविता यादव मैम (History/Geo), विजय राठौर सर (Pol. Science/English), विपिन अग्रवाल सर (Maths)
+- लैब: Smart Classes, Biology Lab (Real samples), Chemistry Lab
+- समय: Summer (7 AM - 1 PM), Winter (8 AM - 2 PM)
 """
 
-# 6. Chat History Session State
+# 5. Session State
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Show previous messages
 for msg in st.session_state.messages:
-    custom_avatar = "👤" if msg["role"] == "user" else school_logo
-    with st.chat_message(msg["role"], avatar=custom_avatar):
+    # 'user' role automatically triggers the right-side CSS we wrote
+    with st.chat_message(msg["role"]):
         st.write(msg["text"])
 
-# 7. User Input and AI Response Action
+# 6. Chat Input & AI Response
 if user_input := st.chat_input("Ask me anything (English, Hindi, or Hinglish)..."):
+    
+    # 1. User Message (Right Side)
     st.session_state.messages.append({"role": "user", "text": user_input})
-    with st.chat_message("user", avatar="👤"):
+    with st.chat_message("user"):
         st.write(user_input)
 
+    # Prepare history for AI
     chat_history = []
     for msg in st.session_state.messages[:-1]:
         chat_history.append(types.Content(role="user" if msg["role"] == "user" else "model", parts=[types.Part.from_text(text=msg["text"])]))
 
-    with st.chat_message("assistant", avatar=school_logo):
-        with st.spinner("सारथी जवाब तैयार कर रहा है... ✨"):
-            try:
-                chat = client.chats.create(
-                    model="gemini-2.5-flash",
-                    history=chat_history,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SCHOOL_DATA,
-                        temperature=0.7 # Helps AI give more creative and detailed answers
-                    )
-                )
-                response = chat.send_message(user_input)
-                st.write(response.text)
-                st.session_state.messages.append({"role": "assistant", "text": response.text})
-            except Exception as e:
-                st.error("दैनिक निशुल्क सीमा या नेटवर्क त्रुटि। कृपया बाद में प्रयास करें।")
-                         
+    # 2. Assistant Response with 3-Dots Animation
+    with st.chat_message("assistant", avatar="🤖"):
+        # Create empty box for animation
+        loading_box = st.empty()
+        
+        # Inject custom 3-dots animation HTML
+        loading_box.markdown("""
+            <div class="typing-box">
+                Sarathi is responding
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        try:
+            # Fetch response
+            chat = client.chats.create(
+                model="gemini-2.5-flash",
+                history=chat_history,
+                config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA, temperature=0.7)
+            )
+            response = chat.send_message(user_input)
+            
+            # Clear animation and show real text
+            loading_box.empty()
+            st.write(response.text)
+            st.session_state.messages.append({"role": "assistant", "text": response.text})
+            
+        except Exception as e:
+            loading_box.empty()
+            st.error("दैनिक निशुल्क सीमा या नेटवर्क त्रुटि। कृपया बाद में प्रयास करें।")
+            
