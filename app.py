@@ -4,24 +4,16 @@ from google.genai import types
 import time
 import os
 
-# 1. Page Configuration - Sets browser icon to your school logo
-st.set_page_config(
-    page_title="sarathi-B.S.", 
-    page_icon="74424.png", 
-    layout="centered"
-)
+# 1. Page Configuration (Home screen icon)
+st.set_page_config(page_title="sarathi-B.S.", page_icon="logo.png", layout="centered")
 
-# --- Full-Proof Logo and Avatar Management ---
-school_logo = "🤖" # Default backup emoji
-if os.path.exists("74424.png"):
-    school_logo = "74424.png"
+# Logo Setup (Naya background-removed logo)
+LOGO_FILE = "logo.png"
+school_logo = "🤖" 
+if os.path.exists(LOGO_FILE):
+    school_logo = LOGO_FILE
 
-# 2. Logo and Premium Header Layout (Gemini Inspired)
-st.markdown("<br>", unsafe_allow_html=True) # Thoda space top par
-
-if os.path.exists("74424.png"):
-    # Aapka professional logo screen par center-aligned dikhega
-    # Logo Animation (CSS)
+# 2. CSS - 3D Logo Animation & Centering
 st.markdown("""
     <style>
     @keyframes pulse {
@@ -29,148 +21,104 @@ st.markdown("""
         50% { transform: scale(1.1); }
         100% { transform: scale(1); }
     }
-    .logo-img {
+    [data-testid="stImage"] img {
         animation: pulse 3s infinite;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 130px;
+        filter: drop-shadow(0px 8px 15px rgba(0, 0, 0, 0.4)); /* 3D Shadow Effect */
+    }
+    [data-testid="stImage"] {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
     }
     </style>
-    <img src="app/static/74424.png" class="logo-img">
 """, unsafe_allow_html=True)
 
-st.title("🤖 sarathi-B.S.")
-st.markdown("##### *Your Intelligent School Companion & AI Guide* ✨")
-st.markdown("#### **स्वागत है प्रधान पब्लिक स्कूल में! 👋**")
+# 3. SPLASH SCREEN (Starting Welcome Animation)
+if "app_loaded" not in st.session_state:
+    st.session_state.app_loaded = False
+
+if not st.session_state.app_loaded:
+    splash = st.empty()
+    with splash.container():
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        if os.path.exists(LOGO_FILE):
+            st.image(LOGO_FILE, width=150) # Bada Logo Splash Screen par
+        
+        st.markdown("<h1 style='text-align: center;'>🤖 sarathi-B.S.</h1>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align: center; color: gray;'>*Your Intelligent School Companion & AI Guide* ✨</h4>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center; color: #FF4B4B;'>**स्वागत है प्रधान पब्लिक स्कूल में! 👋**</h3>", unsafe_allow_html=True)
+    
+    # 3.5 seconds tak welcome screen dikhegi, fir automatic chat khulega
+    time.sleep(3.5)
+    splash.empty() 
+    st.session_state.app_loaded = True
+    st.rerun()
+
+# 4. MAIN CHAT INTERFACE (Splash Screen hatne ke baad yahan aayega)
+if os.path.exists(LOGO_FILE):
+    st.image(LOGO_FILE, width=90) # Chota logo chat interface par
+
+st.markdown("<h2 style='text-align: center;'>🤖 sarathi-B.S.</h2>", unsafe_allow_html=True)
 st.markdown("---")
 
-# 3. Secure API Key Setup (Streamlit Secrets & Sidebar Fallback)
-api_key = None
-if "GOOGLE_API_KEY" in st.secrets:
-    api_key = st.secrets["GOOGLE_API_KEY"]
-elif hasattr(st, "sidebar") and api_key is None:
-    api_key = st.sidebar.text_input("जेमिनी API की दर्ज करें:", type="password")
-
+# API Key Setup
+api_key = st.secrets.get("GOOGLE_API_KEY") or st.sidebar.text_input("API Key:", type="password")
 if not api_key:
-    st.info("💡 **Setup Instruction:** Please configure `GOOGLE_API_KEY` in your Streamlit Secrets or provide it in the sidebar to wake up Sarathi.")
+    st.info("💡 **Setup:** API Key enter karein.")
     st.stop()
 
-# Initialize the official New GenAI Client safely
-try:
-    client = genai.Client(api_key=api_key)
-except Exception as e:
-    st.error(f"Initialization Error: {e}")
-    st.stop()
+client = genai.Client(api_key=api_key)
 
-# 4. Master Data - Strict Prompts & Gemini Style Output Guidelines
+# 5. MASTER DATA (Saari school ki details safe hain)
 SCHOOL_DATA = """
-तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के आधिकारिक AI गाइड हो। तुम्हारा नाम 'sarathi-B.S.' है।
-तुमसे जो भी पूछा जाए, उसका जवाब तुम बिल्कुल एक प्रीमियम, बुद्धिमान, आधुनिक और अत्यंत सुलझे हुए AI की तरह दोगे।
+तुम 'प्रधान पब्लिक सीनियर सेकेंडरी स्कूल' के आधिकारिक AI गाइड 'sarathi-B.S.' हो।
+भाषा: Hinglish (आदरपूर्ण 'जी', 'सर', 'मैम' का प्रयोग)। 
+फॉर्मेट: बुलेट पॉइंट्स और हेडिंग्स का उपयोग करें, मुख्य शब्दों को **BOLD** करें।
 
-⚠️ बातचीत और फॉर्मेटिंग के कड़े नियम (Strict Output Rules):
-1. **भाषा शैली (Language Style - Hinglish):** तुम्हारी भाषा न तो बहुत कठिन शुद्ध हिंदी होनी चाहिए और न ही पूरी इंग्लिश। तुम्हें एक बहुत ही सुंदर, साफ, और सम्मानजनक Hinglish का उपयोग करना है (जैसे: "Namaste sir! School ka timing winter me subah 8:00 AM se hota hai..."). बातचीत में हमेशा 'जी', 'आप', 'मैम' और 'सर' का उपयोग करके अत्यंत आदरपूर्ण बातें करनी हैं।
-2. **Gemini फॉर्मेटिंग शैली (Perfect Presentation):** कभी भी पूरा जवाब एक लंबे, बोरिंग पैराग्राफ में मत लिखना। बात को हमेशा सुंदर बुलेट पॉइंट्स (*) और छोटी हेडिंग्स (###) में बांटकर लिखना। मुख्य शब्दों, तारीखों, क्लास, और नामों को हमेशा **बोल्ड** करना ताकि यूजर को तुरंत समझ आये।
-3. **Emojis का भरपूर उपयोग:** हर जवाब में उचित और प्यारे Emojis (😊, ✨, 🏫, 🧪, 👨‍🏫) का स्वभाविक रूप से इस्तेमाल करें।
+🏛️ मैनेजमेंट:
+- प्रिंसिपल: **मोनिका छोंकर मैम**
+- डायरेक्टर: **मानवेंद्र छोंकर सर**
+- एग्जामिनर: **जगत प्रताप चौहान सर**
+- फीस: **संतोष यादव सर** (सहायक: **चंचल मैम**)
 
-🏛️ स्कूल मैनेजमेंट का सटीक विवरण (Master Data):
-- ### 👥 स्कूल मैनेजमेंट (School Management)
-  - **प्रिंसिपल मैम:** श्रीमती **मोनिका छोंकर मैम** (Mrs. Monika Chhonkar) - अत्यंत अनुशासित, कुशल मार्गदर्शक और बेहद प्रभावशाली इंग्लिश (**Fluent English**) बोलने वालीं।
-  - **डायरेक्टर सर:** **मानवेंद्र छोंकर सर** (Manvendra Chhonkar) - बहुत ही शांत, सीधे और विनम्र (**Polite**) स्वभाव के धनी।
-  - **एग्जामिनर सर:** **जगत प्रताप चौहान सर**।
-  - **फीस काउंटर:** **संतोष यादव सर** (सहायक: **चंचल मैम**)।
+📍 स्थान: प्रधान पब्लिक सीनियर सेकेंडरी स्कूल, सीगना, आगरा। कैंपस: विशाल असेंबली ग्राउंड, लॉन, बड़ा प्लेग्राउंड।
+🏆 रिजल्ट: 10वीं: **देव छोंकर (98%)**, 12वीं: **प्रिया चौहान (96%)**।
 
-📚 स्कूल की मुख्य जानकारियां:
-- ### 📍 स्थान एवं कैंपस (Location & Campus)
-  - **पता:** **प्रधान पब्लिक सीनियर सेकेंडरी स्कूल**, सीगना, आगरा (रायपुरा जाट के आगे)।
-  - **कैंपस:** सामने विशाल **असेंबली ग्राउंड**, साइड में हरा-भरा **लौन** और पीछे खेलकूद के लिए एक बहुत बड़ा शानदार **प्लेग्राउंड** है।
-  - **अनुशासन:** स्कूल अपने कड़े अनुशासन के लिए जाना जाता है। आगरा की खेल प्रतियोगिताओं में अक्सर हमारा स्कूल ही **प्रथम स्थान** पर आता है।
+👨‍🏫 कक्षा 11 फैकल्टी:
+- कविता यादव मैम: History/Geography।
+- विजय राठौर सर: Political Science, Fine Arts, इंग्लिश।
+- विपिन अग्रवाल सर: Maths।
 
-👨‍🏫 कक्षा 11 के शिक्षक (Faculty):
-- ### 👨‍🏫 फैकल्टी (Class 11 Teachers)
-  - **कविता यादव मैम:** इतिहास (**History**) और भूगोल (**Geography**) की विशेषज्ञ।
-  - **विजय राठौर सर:** राजनीति विज्ञान (**Political Science**), **Fine Arts**, **संविधान** और **इंग्लिश ग्रामर** के बेहतरीन शिक्षक।
-  - **विपिन अग्रवाल सर:** गणित (**Maths**) के अत्यंत लोकप्रिय और जादुई शिक्षक।
-
-🧪 प्रयोगशालाएं और सुविधाएं:
-- ### 🧪 लैब्स और सुविधाएं (Modern Infrastructure)
-  - सभी कक्षाएं हवादार हैं और **स्मार्ट क्लास** (Smart Classroom) की आधुनिक सुविधा से लैस हैं।
-  - **बायोलॉजी लैब (Biology Lab):** यहाँ केमिकल्स में सुरक्षित रखे गए असली सैंपल्स (जैसे **रियल फिश, ऑक्टोपस, एल्गी**) मौजूद हैं।
-  - **केमिस्ट्री लैब (Chemistry Lab):** पूर्ण सुरक्षा मानकों के साथ सभी आवश्यक केमिकल्स उपलब्ध हैं।
-
-⏰ विद्यालय का समय (School Timings):
-- ### ⏰ स्कूल का समय
-  - **गर्मियों में (Summer Time):** सुबह **7:00 AM** से दोपहर **1:00 PM** तक।
-  - **सर्दियों में (Winter Time):** सुबह **8:00 AM** से दोपहर **2:00 PM** तक।
-
-🏆 उत्कृष्ट परीक्षा परिणाम (Board Results):
-- ### 🏆 टॉपर्स (Board Exam Results)
-  - **कक्षा 10वीं:** **देव छोंकर** ने **98%** अंक प्राप्त कर विद्यालय टॉप किया।
-  - **कक्षा 12वीं:** **प्रिया चौहान** ने **96%** अंकों के साथ सर्वोच्च स्थान प्राप्त किया।
+🧪 सुविधाएं: Smart Classes, Biology Lab (Real Samples), Chemistry Lab।
+⏰ समय: Summer (7AM-1PM), Winter (8AM-2PM)।
 """
 
-# 5. Session State Memory & Rate Limiter Setup
-if "request_times" not in st.session_state:
-    st.session_state.request_times = []
-
+# 6. Session State & Chat History
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Show previous chat history with school logo avatar
 for msg in st.session_state.messages:
     custom_avatar = "👤" if msg["role"] == "user" else school_logo
     with st.chat_message(msg["role"], avatar=custom_avatar):
         st.write(msg["text"])
 
-# 6. Chat input interface
-user_input = st.chat_input("स्कूल या टीचर्स के बारे में सारथी से पूछें...")
-
-if user_input:
-    current_time = time.time()
-    st.session_state.request_times = [t for t in st.session_state.request_times if current_time - t < 60]
-    
-    if len(st.session_state.request_times) >= 10:
-        st.warning("⚠️ **चेतावनी:** आप बहुत तेज़ी से सवाल पूछ रहे हैं! कृपया थोड़ा रुक कर पूछें।")
-        st.stop()
-
-    st.session_state.request_times.append(current_time)
-    
+# 7. Chat Input Field
+if user_input := st.chat_input("स्कूल या टीचर्स के बारे में पूछें..."):
     st.session_state.messages.append({"role": "user", "text": user_input})
     with st.chat_message("user", avatar="👤"):
         st.write(user_input)
 
-    # Reconstruct history dynamically
     chat_history = []
     for msg in st.session_state.messages[:-1]:
-        role_name = "user" if msg["role"] == "user" else "model"
-        chat_history.append(
-            types.Content(role=role_name, parts=[types.Part.from_text(text=msg["text"])])
-        )
+        chat_history.append(types.Content(role="user" if msg["role"] == "user" else "model", parts=[types.Part.from_text(text=msg["text"])]))
 
-    # 7. AI Processing block with school logo avatar and loading spinner
     with st.chat_message("assistant", avatar=school_logo):
-        with st.spinner("सारथी टाइप कर रहा है... ✨"):
+        with st.spinner("सारथी जवाब ढूँढ रहा है... ✨"):
             try:
-                chat = client.chats.create(
-                    model="gemini-2.5-flash",
-                    history=chat_history,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SCHOOL_DATA,
-                        temperature=0.7
-                    )
-                )
-                
+                chat = client.chats.create(model="gemini-2.5-flash", history=chat_history, config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA))
                 response = chat.send_message(user_input)
-                
                 st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "text": response.text})
-                
             except Exception as e:
-                err_message = str(e).upper()
-                if "503" in err_message or "UNAVAILABLE" in err_message:
-                    st.info("🏫 **सारथी संदेश:** सर्वर पर थोड़ा ट्रैफिक है। कृपया 5-10 सेकंड रुक कर दोबारा पूछें! 😊")
-                elif "429" in err_message or "RESOURCE_EXHAUSTED" in err_message:
-                    st.warning("⏳ **सारथी संदेश:** दैनिक निशुल्क सीमा समाप्त। कृपया थोड़ी देर बाद प्रयास करें। 🙏")
-                else:
-                    st.error("⚠️ **तकनीकी संदेश:** नेटवर्क में कुछ रुकावट है या API Key अमान्य है। कृपया पुनः प्रयास करें।")
-                    
+                st.error("सर्वर में एरर है। थोड़ी देर बाद कोशिश करें।")
+                
