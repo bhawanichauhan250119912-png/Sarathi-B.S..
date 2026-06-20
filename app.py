@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. SEAMLESS INTERFACE & GRAPHICS CSS
+# 2. SEAMLESS INTERFACE, 3D GRAPHICS & FIXED INPUT CSS
 # ==========================================
 st.markdown("""
     <style>
@@ -56,11 +56,11 @@ st.markdown("""
         font-weight: 500;
     }
 
-    /* Assistant Shaded Response Box (Like Professional UI) */
+    /* Assistant Shaded Response Box */
     .assistant-wrapper {
         margin: 18px 0;
         padding: 16px;
-        background-color: #f8fafc !important; /* Shaded Box Portion */
+        background-color: #f8fafc !important; 
         border-radius: 16px;
         border: 1px solid #e2e8f0;
     }
@@ -69,7 +69,7 @@ st.markdown("""
         font-size: 15px;
         line-height: 1.6;
     }
-    .assistant-text-container p, .assistant-text-container li {
+    .assistant-text-container p, .assistant-text-container li, .assistant-text-container span {
         color: #1f2937 !important;
     }
 
@@ -127,26 +127,38 @@ st.markdown("""
         animation: flashWelcome 2s infinite ease-in-out;
     }
     @keyframes flashWelcome {
-        0%, 100% { opacity: 0.6; transform: scale(0.98); filter: drop-shadow(0 0 2px rgba(56,189,248,0)); }
-        50% { opacity: 1; transform: scale(1.02); filter: drop-shadow(0 0 8px rgba(56,189,248,0.5)); color: #0369a1; }
+        0%, 100% { opacity: 0.6; transform: scale(0.98); }
+        50% { opacity: 1; transform: scale(1.02); color: #0369a1; }
     }
 
-    /* FIXED: Chat Input Box Typography & Layout */
+    /* 🚨 FIXED: CHAT INPUT AREA AND TEXT COLOR OVERHAUL 🚨 */
+    /* Remove any forced dark/black backgrounds from the bottom layout block */
+    [data-testid="stBottomBlockContainer"], div[class*="stChatInputContainer"] {
+        background-color: #ffffff !important;
+    }
+    
+    /* Make the core chat input box capsule a beautiful Light Skyblue */
     div[data-testid="stChatInput"] {
         background-color: #EAF2FC !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+        border: 1px solid #bae6fd !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important;
         border-radius: 30px !important;
         padding: 4px 12px !important;
-        bottom: 20px !important;
     }
-    /* Strictly target input text area for crisp black color on white canvas */
+    
+    /* Force typed text inside the input box to be completely Crisp Black */
     div[data-testid="stChatInput"] textarea {
         background-color: transparent !important;
         color: #1f2937 !important; 
+        -webkit-text-fill-color: #1f2937 !important;
         font-size: 15px !important;
     }
-    /* Sky Blue Send Icon button overrides */
+    div[data-testid="stChatInput"] textarea::placeholder {
+        color: #6b7280 !important;
+        -webkit-text-fill-color: #6b7280 !important;
+    }
+    
+    /* Sky Blue Send Icon Button */
     div[data-testid="stChatInput"] button svg {
         fill: #38bdf8 !important;
         color: #38bdf8 !important;
@@ -197,7 +209,7 @@ SCHOOL_DATA = """
 1. Language Alignment Rule: जिस भाषा या स्टाइल में यूजर बात करे, तुम्हें strictly उसी भाषा में जवाब देना है। 
    - अगर यूजर Pure Hindi (जैसे: "प्रिंसिपल कौन है?") में पूछे, तो शुद्ध हिंदी में जवाब दो।
    - अगर यूजर Hinglish (जैसे: "School ki timings kya hai?") में पूछे, तो वैसे ही रोमन स्क्रिप्ट/Hinglish में जवाब दो।
-   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदलो।
+   - अगर यूजर English (जैसे: "Who is the director?") में पूछे, तो English में जवाब दो। अपनी तरफ से भाषा का मिक्स मत बदललो।
 2. Response Formatting: हमेशा बुलेट पॉइंट्स, बोल्ड टेक्स्ट या टेबल का प्रयोग करें। बड़ा पैराग्राफ बिल्कुल न लिखें।
 3. Guardrails: स्कूल के बाहर के किसी भी सवाल को विनम्रता से रिजेक्ट करें।
 4. Uncertainty: सटीक जानकारी न होने पर स्कूल एडमिनिस्ट्रेशन डेस्क से संपर्क करने को कहें।
