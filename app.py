@@ -76,9 +76,9 @@ if user_input := st.chat_input("Ask me anything about the school..."):
         typing = st.empty()
         typing.markdown("💬 *Sarathi is thinking...*")
         try:
-            # Using latest Gemini 2.0 Flash
+            # Using latest Gemini 2.5 Flash
             response_stream = client.models.generate_content_stream(
-                model="gemini-2.0-flash", 
+                model="gemini-2.5-flash", 
                 contents=api_contents,
                 config=types.GenerateContentConfig(system_instruction=SCHOOL_DATA, temperature=0.7)
             )
